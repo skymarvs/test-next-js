@@ -46,6 +46,7 @@ export async function updateSession(request: NextRequest) {
     '/users-page','/events-page'
   ]
 
+  console.log(!user)
   if (!user && protectedPath.includes(request.nextUrl.pathname)) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
