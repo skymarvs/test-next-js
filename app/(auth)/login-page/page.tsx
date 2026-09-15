@@ -3,30 +3,22 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { authSchema, authSchemaType } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import z from "zod";
 
-const formSchema = z.object({
-    username: z.string()
-        .min(8, "Username must be at least 8 characters."),
-    password: z.string()
-        .min(8, "Password must be at least 8 characters.")
-        .regex(/^[a-zA-Z0-9]+$/, "Password must be alphanumeric.")
-})
-
-type formSchemaType = z.infer<typeof formSchema>;
-
-export default function ManualLogin(){
-    const form = useForm<formSchemaType>({
-        resolver: zodResolver(formSchema),
+export default function SignInPage(){
+    const router = useRouter();
+    const form = useForm<authSchemaType>({
+        resolver: zodResolver(authSchema),
         defaultValues: {
             username: "",
             password: ""
         }
     });
 
-    function onSubmit(data: formSchemaType){
+    function onSubmit(data: authSchemaType){
         console.log("submit succesfull")
     }
 
@@ -81,5 +73,9 @@ export default function ManualLogin(){
                 </FieldGroup>
             </FieldSet>
         </form>  
+        <div className="text-xs text-center">
+            Don't have an account?
+            <Button variant="link" className="px-1" onClick={() => router.push("/signup-page")}>Sign-up</Button>
+        </div>
     </>)
 }
