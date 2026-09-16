@@ -8,8 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "cn";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { User } from "@supabase/supabase-js";
-import createClient from "@/lib/supabase/client";
 import { toast } from "@/components/ui/toast";
+import signoutUser from "@/app/actions/auth";
 
 interface HeaderPageProps {
     user : User | null
@@ -24,15 +24,6 @@ export default function HeaderPage( { user } : HeaderPageProps){
         return;
     }
 
-    const signoutUser = async () => {
-        const supabase = createClient();
-        const { error } = await supabase.auth.signOut();
-        if(error){
-            throw new Error(error.message);
-        }
-        return 'User logged out.';
-    }
-
     const getInitials = (name: String) => {
         const words = name?.trim().split(/\s+/) || [];
         return words.length ? (words[0][0] + words[words.length - 1][0]).toUpperCase() : "";
@@ -41,9 +32,9 @@ export default function HeaderPage( { user } : HeaderPageProps){
     const handleSignOutBtnClick = () => {
         toast.promise(signoutUser(), {
             loading: "Logging out.",
-            success: (data) => {
+            success: () => {
                 router.refresh();
-                return data;
+                return "User logged out.";
             },
             error: (err) => `Failed: ${err.message}`
         }); 

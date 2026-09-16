@@ -1,11 +1,11 @@
 "use client"
 
+import { signupUser } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { signupSchema, signupSchemaType } from "@/lib/schema";
-import createClient from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
@@ -23,26 +23,13 @@ export default function SignUpPage(){
         }
     });
 
-    const signupUser = async (formData: signupSchemaType) => {
-        const supabase = createClient();
-        const { data, error } = await supabase.auth.signUp({
-            email: formData.email,
-            password: formData.password,
-            options: {
-                data : {
-                    full_name: `${formData.firstName} ${formData.lastName}`
-                }
-            }
-        });
-        if(error){
-            throw new Error(error.message);
-        }
-    }
-
     const handleSignUpBtnClick = (formData: signupSchemaType) => {
         toast.promise(signupUser(formData), {
             loading: "Signing up...",
-            success: "Sign-up successful.",
+            success: () => {
+                router.push("/events-page")
+                return "Sign-up successful.";
+            },
             error: (err) => `Failed: ${err.message}`
         }); 
     }

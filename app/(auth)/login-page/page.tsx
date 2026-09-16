@@ -1,8 +1,10 @@
 'use client'
 
+import { loginUser } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
 import { loginSchema, loginSchemaType } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -19,7 +21,14 @@ export default function SignInPage(){
     });
 
     function onSubmit(data: loginSchemaType){
-        console.log("submit succesfull")
+        toast.promise(loginUser(data), {
+            loading: "Signing up...",
+            success: () => {
+                router.push("/events-page")
+                return "Sign-up successful."
+            },
+            error: (err) => `Failed: ${err.message}`
+        })
     }
 
     return (<>

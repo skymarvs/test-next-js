@@ -45,11 +45,17 @@ export async function updateSession(request: NextRequest) {
   const protectedPath = [
     '/users-page','/events-page'
   ]
+  const authPath = [
+    '/login-page','/signup-page'
+  ]
 
+  const url = request.nextUrl.clone()
   if (!user && protectedPath.includes(request.nextUrl.pathname)) {
     // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone()
     url.pathname = '/'
+    return NextResponse.redirect(url)
+  } else if(user && authPath.includes(request.nextUrl.pathname)){
+    url.pathname = '/events-page'
     return NextResponse.redirect(url)
   }
 

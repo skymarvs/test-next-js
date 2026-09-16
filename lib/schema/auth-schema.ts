@@ -2,11 +2,11 @@ import z from "zod";
 
 export const signupSchema = z.object({
     firstName: z.string()
-        .min(8, "First name must be at least 8 characters.")
-        .regex(/^[a-zA-Z]+$/, "First name must only be alphabets."),
+        .min(3, "First name must be at least 3 characters.")
+        .regex(/^[a-zA-Z]+( [a-zA-Z]+)*$/, "Must contain words separated by a single space only"),
     lastName: z.string()
-        .min(8, "Last name must be at least 8 characters.")
-        .regex(/^[a-zA-Z]+$/, "Last name must only be alphabets."),
+        .min(3, "Last name must be at least 3 characters.")
+        .regex(/^[a-zA-Z]+( [a-zA-Z]+)*$/, "Must contain words separated by a single space only"),
     email: z.email()
         .min(8, "Username must be at least 8 characters."),
     password: z.string()
