@@ -1,43 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
+import { NextResponse } from 'next/server'
+import createClient from '@/lib/supabase/server'
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
+  // next parameter can be used to redirect the user after login
   const next = searchParams.get('next') ?? '/'
 
   if (code) {
-    // 1. Prepare the redirect response object first
-    const response = NextResponse.redirect(`${origin}${next}`)
-
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_CLIENT_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll()
-          },
-          setAll(cookiesToSet) {
-            // 2. Set cookies on both the request AND the outgoing response
-            cookiesToSet.forEach(({ name, value, options }) => {
-              request.cookies.set(name, value)
-              response.cookies.set(name, value, options)
-            })
-          },
-        },
-      }
-    )
-
-    // 3. Exchange the code (this invokes setAll under the hood)
+    
+    const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-
     if (!error) {
-      // 4. Return the response object containing the new session cookies
-      return response
+      return NextResponse.redirect(`${origin}${next}`)
     }
   }
 
-  // Return to error route if exchange fails or code is missing
-  return NextResponse.redirect(`${origin}/?error=auth_failed`)
+  // Return the user to an error page if the exchange fails
+  return NextResponse.redirect(`${origin}/auth/auth-error`)
 }

@@ -13,7 +13,6 @@ export default function HeaderPage(){
     const router = useRouter();
     const pathName = usePathname();
 
-    console.log(pathName)
     if(authTabs.includes(pathName)){
         return;
     }

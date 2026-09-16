@@ -4,15 +4,21 @@ import { Button } from "@/components/ui/button";
 import createClient from "@/lib/supabase/client";
 
 export default function OAuthLogin(){
-    function signInWithGoogle(){
+
+    const signInWithGoogle = async () => {
         const supabase = createClient();
-        supabase.auth.signInWithOAuth({
+        await supabase.auth.signInWithOAuth({
             "provider": "google",
             "options": {
-                redirectTo: `${window.location.origin}/api/auth/callback`,
+                redirectTo: `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/callback?next=/events-page`,
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent'          
+                }
             }
         })
     }
+
     return (<>
         <Button size={"lg"} variant="outline" onClick={signInWithGoogle}>
             <i className="devicon-google-plain text-lg"></i>
