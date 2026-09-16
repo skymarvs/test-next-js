@@ -41,14 +41,14 @@ export default function HeaderPage( { user } : HeaderPageProps){
     }
 
     return(<>
-        <div className="p-5 text-sm flex items-center justify-between">
+        <div className="p-5 text-lg flex items-center justify-between">
             <div className="flex items-center gap-4">
                 <Ticket className="text-primary"/>
                 <p className="text-primary">Test Logo</p>
                 <Separator orientation="vertical"/>
                 <div>
-                    <Button variant="ghost" onClick={() => router.push("/events-page")}>Events</Button>
-                    <Button variant="ghost" onClick={() => router.push("/users-page")}>Users</Button>
+                    <Button variant="ghost" className="text-sm" onClick={() => router.push("/events-page")}>Events</Button>
+                    <Button variant="ghost" className="text-sm" onClick={() => router.push("/users-page")}>Users</Button>
                 </div>
             </div>
             <div className="flex gap-4 items-center">
