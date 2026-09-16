@@ -7,8 +7,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "cn";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { User } from "@supabase/supabase-js";
+import createClient from "@/lib/supabase/client";
+import { toast } from "@/components/ui/toast";
 
-export default function HeaderPage(){
+interface HeaderPageProps {
+    user : User | null
+}
+
+export default function HeaderPage( { user } : HeaderPageProps){
     const authTabs = ['/login-page', '/signup-page']
     const router = useRouter();
     const pathName = usePathname();
@@ -16,6 +23,32 @@ export default function HeaderPage(){
     if(authTabs.includes(pathName)){
         return;
     }
+
+    const signoutUser = async () => {
+        const supabase = createClient();
+        const { error } = await supabase.auth.signOut();
+        if(error){
+            throw new Error(error.message);
+        }
+        return 'User logged out.';
+    }
+
+    const getInitials = (name: String) => {
+        const words = name?.trim().split(/\s+/) || [];
+        return words.length ? (words[0][0] + words[words.length - 1][0]).toUpperCase() : "";
+    };
+
+    const handleSignOutBtnClick = () => {
+        toast.promise(signoutUser(), {
+            loading: "Logging out.",
+            success: (data) => {
+                router.refresh();
+                return data;
+            },
+            error: (err) => `Failed: ${err.message}`
+        }); 
+    }
+
     return(<>
         <div className="p-5 text-sm flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -28,34 +61,40 @@ export default function HeaderPage(){
                 </div>
             </div>
             <div className="flex gap-4 items-center">
-                <Button variant="outline" onClick={() => router.push("/login-page")}>
-                    Sign-in
-                    <MoveRight />
-                </Button>
-                <Popover>
-                    <PopoverTrigger nativeButton={false} render={
-                        <div className={cn(
-                            "flex gap-6 items-center cursor-pointer p-6 w-60",
-                            buttonVariants({variant: "ghost"})
-                        )}>
-                            <Avatar size="lg">
-                                <AvatarImage src=""></AvatarImage>
-                                <AvatarFallback>CN</AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <span>John Doe</span><br/>
-                                <span className="text-xs text-foreground/50">johnDoe@gmail.com</span>
-                            </div>
-                            <ChevronsDownUp />
-                        </div>
-                    }/>
-                    <PopoverContent align="end" className="w-60">
-                        <Button variant="ghost">
-                            Sign-out
-                            <SquareArrowRightExit />
+                { user == null 
+                    ? (
+                        <Button variant="outline" onClick={() => router.push("/login-page")}>
+                            Sign-in
+                            <MoveRight />
                         </Button>
-                    </PopoverContent>
-                </Popover>
+                    )
+                    : (
+                        <Popover>
+                            <PopoverTrigger className="" nativeButton={false} render={
+                                <div className={cn(
+                                    "flex gap-6 cursor-pointer p-8 w-max",
+                                    buttonVariants({variant: "ghost"})
+                                )}>
+                                    <Avatar size="lg">
+                                        <AvatarImage src={user.user_metadata.picture}></AvatarImage>
+                                        <AvatarFallback>{getInitials(user.user_metadata.full_name)}</AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                        <span>{user.user_metadata.full_name}</span><br/>
+                                        <span className="text-xs text-foreground/50">{user.email}</span>
+                                    </div>
+                                    <ChevronsDownUp />
+                                </div>
+                            }/>
+                            <PopoverContent align="end" className="w-[var(--anchor-width)]">
+                                <Button variant="ghost" onClick={handleSignOutBtnClick}>
+                                    Sign-out
+                                    <SquareArrowRightExit />
+                                </Button>
+                            </PopoverContent>
+                        </Popover>
+                    )
+                }
             </div>
         </div>
         <Separator />

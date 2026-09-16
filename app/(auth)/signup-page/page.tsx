@@ -3,37 +3,102 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { authSchema, authSchemaType } from "@/lib/schema";
+import { toast } from "@/components/ui/toast";
+import { signupSchema, signupSchemaType } from "@/lib/schema";
+import createClient from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 
 export default function SignUpPage(){
     const router = useRouter();
-    const form = useForm<authSchemaType>({
-        resolver: zodResolver(authSchema),
+    const form = useForm<signupSchemaType>({
+        resolver: zodResolver(signupSchema),
         defaultValues: {
-            username: "",
-            password: ""
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            passwordConfirmation: ""
         }
     });
 
-    function onSubmit(data: authSchemaType){
-        console.log("submit succesfull")
+    const signupUser = async (formData: signupSchemaType) => {
+        const supabase = createClient();
+        const { data, error } = await supabase.auth.signUp({
+            email: formData.email,
+            password: formData.password,
+            options: {
+                data : {
+                    full_name: `${formData.firstName} ${formData.lastName}`
+                }
+            }
+        });
+        if(error){
+            throw new Error(error.message);
+        }
+    }
+
+    const handleSignUpBtnClick = (formData: signupSchemaType) => {
+        toast.promise(signupUser(formData), {
+            loading: "Signing up...",
+            success: "Sign-up successful.",
+            error: (err) => `Failed: ${err.message}`
+        }); 
     }
 
     return (<>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(handleSignUpBtnClick)}>
             <FieldSet>
                 <FieldLegend>Sign up</FieldLegend>
                 <FieldDescription>Create your account</FieldDescription>
                 <FieldGroup>
+                    <div className="flex gap-4">
+                        <Controller 
+                            name="firstName"
+                            control={form.control}
+                            render={({field, fieldState}) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="username">First Name</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        aria-invalid={fieldState.invalid}
+                                        id="name"
+                                        autoComplete="off" 
+                                        placeholder="Type your first name here"
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller 
+                            name="lastName"
+                            control={form.control}
+                            render={({field, fieldState}) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="username">Last Name</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        aria-invalid={fieldState.invalid}
+                                        id="name"
+                                        autoComplete="off" 
+                                        placeholder="Type your last name here"
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                    </div>
                     <Controller 
-                        name="username"
+                        name="email"
                         control={form.control}
                         render={({field, fieldState}) => (
                             <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor="username">Username</FieldLabel>
+                                <FieldLabel htmlFor="username">Email</FieldLabel>
                                 <Input
                                     {...field}
                                     aria-invalid={fieldState.invalid}
@@ -53,6 +118,26 @@ export default function SignUpPage(){
                         render={({field, fieldState}) => (
                             <Field data-invalid={fieldState.invalid}>
                                 <FieldLabel htmlFor="password">Password</FieldLabel>
+                                <Input 
+                                    {...field}
+                                    aria-invalid={fieldState.invalid}
+                                    id="password" 
+                                    autoComplete="off" 
+                                    type="password" 
+                                    placeholder="Type your password here" 
+                                />
+                                {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                )}
+                            </Field>
+                        )}
+                    />
+                    <Controller
+                        name="passwordConfirmation"
+                        control={form.control}
+                        render={({field, fieldState}) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor="password">Password Confirmation</FieldLabel>
                                 <Input 
                                     {...field}
                                     aria-invalid={fieldState.invalid}
