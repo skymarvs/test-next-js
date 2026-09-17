@@ -6,6 +6,8 @@ import { reactNodeSchemaType } from "@/lib/schema";
 import HeaderPage from "@/components/custom/header";
 import createClient from "@/lib/supabase/server";
 import { Toaster } from "@/components/ui/toast";
+import RoleProvider from "@/contexts/role-provider";
+import UserMetadataProvider from "@/contexts/role-provider";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -34,10 +36,12 @@ export default async function RootLayout({ children }: reactNodeSchemaType) {
     >
       <body className="min-h-full flex flex-col">
         <div className="mx-auto container">
-          <HeaderPage user={data?.claims.user_metadata}  />
-          <div className="container mx-auto my-8">
-            {children}
-          </div>
+          <UserMetadataProvider user={data?.claims.user_metadata}>
+            <HeaderPage user={data?.claims.user_metadata}  />
+            <div className="container mx-auto my-8">
+              {children}
+            </div>
+          </UserMetadataProvider>
         </div>
         <Toaster />
       </body>

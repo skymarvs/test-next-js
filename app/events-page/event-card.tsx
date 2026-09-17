@@ -26,12 +26,12 @@ export function EventCard( props : EventDataProps) {
         alt="Event cover"
         className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
       />
-      <CardHeader className="min-h-20 max-h-20">
+      <CardHeader className="min-h-20 max-h-20 content-start">
         <CardAction>
-          <Badge variant="secondary">Available Slot : {props.availableSeats}</Badge>
+          <Badge variant="secondary">Available</Badge>
         </CardAction>
-        <CardTitle>{props.title}</CardTitle>
-        <CardDescription>{props.description}</CardDescription>
+        <CardTitle className="line-clamp">{props.title}</CardTitle>
+        <CardDescription className="line-clamp-3 col-span-2 text-justify">{props.description}</CardDescription>
       </CardHeader>
       <CardFooter>
         <Button className="w-full">View Event</Button>
