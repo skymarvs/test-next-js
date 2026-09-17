@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: reactNodeSchemaType) {
   const supabase = await createClient();
-  const { data: { user}} = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
   return (
     <html
       lang="en"
@@ -34,8 +34,10 @@ export default async function RootLayout({ children }: reactNodeSchemaType) {
     >
       <body className="min-h-full flex flex-col">
         <div className="mx-auto container">
-          <HeaderPage user={user}  />
-          {children}
+          <HeaderPage user={data?.claims.user_metadata}  />
+          <div className="container mx-auto my-8">
+            {children}
+          </div>
         </div>
         <Toaster />
       </body>

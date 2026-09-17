@@ -43,7 +43,7 @@ export async function updateSession(request: NextRequest) {
   const user = data?.claims
 
   const protectedPath = [
-    '/users-page','/events-page'
+    '/users-page'
   ]
   const authPath = [
     '/login-page','/signup-page'

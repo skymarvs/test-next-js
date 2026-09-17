@@ -7,16 +7,17 @@ import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "cn";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { User } from "@supabase/supabase-js";
+import { UserMetadata } from "@supabase/supabase-js";
 import { toast } from "@/components/ui/toast";
 import signoutUser from "@/app/actions/auth";
+import { Roles } from "@/lib/enums/roles";
 
 interface HeaderPageProps {
-    user : User | null
+    user : UserMetadata | undefined
 }
 
 export default function HeaderPage( { user } : HeaderPageProps){
-    const authTabs = ['/login-page', '/signup-page']
+    const authTabs = ['/login-page', '/signup-page'];
     const router = useRouter();
     const pathName = usePathname();
 
@@ -48,7 +49,9 @@ export default function HeaderPage( { user } : HeaderPageProps){
                 <Separator orientation="vertical"/>
                 <div>
                     <Button variant="ghost" className="text-sm" onClick={() => router.push("/events-page")}>Events</Button>
-                    <Button variant="ghost" className="text-sm" onClick={() => router.push("/users-page")}>Users</Button>
+                    {user?.user_role === Roles.Admin && (
+                        <Button variant="ghost" className="text-sm" onClick={() => router.push("/users-page")}>Users</Button>
+                    )}
                 </div>
             </div>
             <div className="flex gap-4 items-center">
@@ -67,12 +70,12 @@ export default function HeaderPage( { user } : HeaderPageProps){
                                     buttonVariants({variant: "ghost"})
                                 )}>
                                     <Avatar size="lg">
-                                        <AvatarImage src={user.user_metadata.picture}></AvatarImage>
-                                        <AvatarFallback>{getInitials(user.user_metadata.full_name)}</AvatarFallback>
+                                        <AvatarImage src={user?.picture}></AvatarImage>
+                                        <AvatarFallback>{getInitials(user?.full_name)}</AvatarFallback>
                                     </Avatar>
                                     <div>
-                                        <span>{user.user_metadata.full_name}</span><br/>
-                                        <span className="text-xs text-foreground/50">{user.email}</span>
+                                        <span>{user?.full_name}</span><br/>
+                                        <span className="text-xs text-foreground/50">{user?.email}</span>
                                     </div>
                                     <ChevronsDownUp />
                                 </div>

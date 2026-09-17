@@ -6,7 +6,7 @@ import { type DataTableFeatures } from "@/components/custom/data-table/data-tabl
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal } from "lucide-react"
-import { DataTableColumnHeader } from "../../../components/custom/data-table/column-header"
+import { DataTableColumnHeader } from "../../components/custom/data-table/column-header"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

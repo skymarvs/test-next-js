@@ -1,4 +1,4 @@
-import { columns, Payment } from "@/app/users-page/data-table/columns"
+import { columns, Payment } from "@/app/users-page/columns"
 import { DataTable } from "@/components/custom/data-table/data-table"
 
 async function getData(): Promise<Payment[]> {
@@ -21,11 +21,9 @@ async function getData(): Promise<Payment[]> {
 }
 
 export default async function DemoPage() {
-  const data = await getData()
-
-  return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
-    </div>
-  )
+    const data = await getData()
+    return (<>
+        <h1 className="mb-4">Users Page</h1>
+        <DataTable columns={columns} data={data} />
+    </>);
 }
