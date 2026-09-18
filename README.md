@@ -35,3 +35,29 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 # test-next-js
+
+## Supabase Remote Development
+
+Note: you need docker installed for the remote to compare migration with your local
+
+```bash
+
+# login to supabase
+npx supabase login
+
+# reference project 
+npx supabase link <project-reference>
+
+# create initial migration
+npx supabase db pull --linked
+
+# create the migration changes between remote and migration files
+npx supabase db diff --linked -f <file-name>
+
+# push pending migrations to remote
+npx supabase db push --linked
+
+# reset remote database and reapply existing migrations
+npx supabase db reset --linked
+
+```
