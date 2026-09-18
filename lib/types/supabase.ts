@@ -44,7 +44,7 @@ export type Database = {
         }
         Relationships: []
       }
-      user_roles: {
+      profile: {
         Row: {
           auth_id: string | null
           created_at: string
