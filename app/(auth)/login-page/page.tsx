@@ -5,22 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
-import { loginSchema, loginSchemaType } from "@/lib/schema";
+import { LoginSchema, LoginSchemaType } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 
 export default function SignInPage(){
     const router = useRouter();
-    const form = useForm<loginSchemaType>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<LoginSchemaType>({
+        resolver: zodResolver(LoginSchema),
         defaultValues: {
             email: "",
             password: ""
         }
     });
 
-    function onSubmit(data: loginSchemaType){
+    function onSubmit(data: LoginSchemaType){
         toast.promise(loginUser(data), {
             loading: "Signing up...",
             success: () => {

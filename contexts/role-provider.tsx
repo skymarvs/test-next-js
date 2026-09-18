@@ -19,4 +19,4 @@ export default function UserMetadataProvider({children, user} : UserMetadataProv
     </>);
 }
 
-export const getUserMetadata = () => useContext(UserMetadataProviderContext).user;
+export const useUserMetadata = () => useContext(UserMetadataProviderContext).user;

@@ -1,12 +1,12 @@
 "use server"
 
-import { loginSchema, loginSchemaType, signupSchema, signupSchemaType } from "@/lib/schema";
+import { LoginSchema, LoginSchemaType, SignupSchema, SignupSchemaType } from "@/lib/schema";
 import createClient from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
-export async function signupUser(formData : signupSchemaType){
+export async function signupUser(formData : SignupSchemaType){
 
-    const parsedData = signupSchema.safeParse(formData);
+    const parsedData = SignupSchema.safeParse(formData);
     if(!parsedData.success){
         throw new Error(parsedData.error.message)
     }
@@ -31,9 +31,9 @@ export async function signupUser(formData : signupSchemaType){
     revalidatePath("/", 'layout');
 }
 
-export async function loginUser(formData : loginSchemaType){
+export async function loginUser(formData : LoginSchemaType){
 
-    const parsedData = loginSchema.safeParse(formData);
+    const parsedData = LoginSchema.safeParse(formData);
     if(!parsedData.success){
         throw new Error(parsedData.error.message)
     }

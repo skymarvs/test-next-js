@@ -1,8 +1,8 @@
 import { Marker, MarkerContent } from "@/components/ui/marker";
-import { reactNodeSchemaType } from "@/lib/schema";
+import { ReactNodeType } from "@/lib/schema";
 import OAuthLogin from "@/app/(auth)/common/oauth-login";
 
-export default function AuthLayout({children} : reactNodeSchemaType){
+export default function AuthLayout({children} : ReactNodeType){
     return (<>
         <div className="flex justify-center align-items-center items-center min-h-screen">
             <div className="grid gap-1 w-100">

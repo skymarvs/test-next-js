@@ -3,9 +3,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 
 import { type DataTableFeatures } from "@/components/custom/data-table/data-table-features"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { MoreHorizontal } from "lucide-react"
 import { DataTableColumnHeader } from "@/components/custom/data-table/column-header"
 import { Event } from "@/lib/types/models"
 

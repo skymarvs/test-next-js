@@ -1,4 +1,4 @@
 
-export type reactNodeSchemaType = {
+export type ReactNodeType = {
     children: React.ReactNode
 }

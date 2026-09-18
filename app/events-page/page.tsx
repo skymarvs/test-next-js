@@ -2,7 +2,7 @@
 
 import { EventCard, EventDataProps } from "./event-card";
 import { Button } from "@/components/ui/button";
-import { getUserMetadata } from "@/contexts/role-provider";
+import { useUserMetadata } from "@/contexts/role-provider";
 import { useRouter } from "next/navigation";
 
 const getData = () : EventDataProps[] => {
@@ -29,7 +29,7 @@ const getData = () : EventDataProps[] => {
 }
 
 export default function EventsPage(){
-    const userMetadata = getUserMetadata();
+    const userMetadata = useUserMetadata();
     const events = getData();
     const router = useRouter();
     return(<>

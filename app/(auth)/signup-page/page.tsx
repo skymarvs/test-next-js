@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
-import { signupSchema, signupSchemaType } from "@/lib/schema";
+import { SignupSchema, SignupSchemaType } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 
 export default function SignUpPage(){
     const router = useRouter();
-    const form = useForm<signupSchemaType>({
-        resolver: zodResolver(signupSchema),
+    const form = useForm<SignupSchemaType>({
+        resolver: zodResolver(SignupSchema),
         defaultValues: {
             firstName: "",
             lastName: "",
@@ -23,7 +23,7 @@ export default function SignUpPage(){
         }
     });
 
-    const handleSignUpBtnClick = (formData: signupSchemaType) => {
+    const handleSignUpBtnClick = (formData: SignupSchemaType) => {
         toast.promise(signupUser(formData), {
             loading: "Signing up...",
             success: () => {

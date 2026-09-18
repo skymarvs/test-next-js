@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const signupSchema = z.object({
+export const SignupSchema = z.object({
     firstName: z.string()
         .min(3, "First name must be at least 3 characters.")
         .regex(/^[a-zA-Z]+( [a-zA-Z]+)*$/, "Must contain words separated by a single space only"),
@@ -21,7 +21,7 @@ export const signupSchema = z.object({
     path: ['passwordConfirmation']
 })
 
-export const loginSchema = z.object({
+export const LoginSchema = z.object({
     email: z.email()
         .min(8, "Username must be at least 8 characters."),
     password: z.string()
@@ -29,5 +29,5 @@ export const loginSchema = z.object({
         .regex(/^[a-zA-Z0-9]+$/, "Password must be alphanumeric.")
 })
 
-export type signupSchemaType = z.infer<typeof signupSchema>;
-export type loginSchemaType = z.infer<typeof loginSchema>;
+export type SignupSchemaType = z.infer<typeof SignupSchema>;
+export type LoginSchemaType = z.infer<typeof LoginSchema>;
