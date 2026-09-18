@@ -1,37 +1,31 @@
 "use client"
 
-import { columns, Payment } from "@/app/users-page/columns"
-import { DataTable } from "@/components/custom/data-table/data-table"
-import { useEffect, useState } from "react"
+import { DataTable } from "@/components/custom/data-table/data-table";
+import { toast } from "@/components/ui/toast";
+import { Profile } from "@/lib/types/models";
+import { useEffect, useState } from "react";
+import { columns } from "./columns";
+import { getProfile } from "../actions/profile";
 
-async function getData(): Promise<Payment[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: "728ed52f",
-      amount: 200,
-      status: "failed",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "test@example.com",
-    },
-    // ...
-  ]
-}
 
-export default function DemoPage() {
-    const [payment, setPayment] = useState<Payment[]>([]);
-  
+export default function ManageEventPage(){
+    const [profiles, setProfiles] = useState<Profile[] | null>([]);
+
     useEffect(() => {
-      getData().then((data) => setPayment(data));
-    }, []);
+      getProfile()
+        .then((data) => setProfiles(data))
+        .catch((error) => {
+          if(error instanceof Error){
+            toast.add({
+              title: "Failed to fetch events.",
+              description: error.message,
+              type: "error"
+            })
+          }
+        });
+    }, [])
 
     return (<>
-        <h1 className="mb-4">Users Page</h1>
-        <DataTable columns={columns} data={payment} />
+        <DataTable columns={columns} data={profiles ?? []} searchFilter={ {column_name: 'full_name', placeholder: "Search by name"}}/>
     </>);
 }

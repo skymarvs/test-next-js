@@ -48,23 +48,32 @@ export type Database = {
         Row: {
           auth_id: string | null
           created_at: string
+          email: string | null
+          full_name: string | null
           id: number
           roles: Database["public"]["Enums"]["roles"] | null
           updated_at: string | null
+          uploaded_avatar_path: string | null
         }
         Insert: {
           auth_id?: string | null
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id?: number
           roles?: Database["public"]["Enums"]["roles"] | null
           updated_at?: string | null
+          uploaded_avatar_path?: string | null
         }
         Update: {
           auth_id?: string | null
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id?: number
           roles?: Database["public"]["Enums"]["roles"] | null
           updated_at?: string | null
+          uploaded_avatar_path?: string | null
         }
         Relationships: []
       }
