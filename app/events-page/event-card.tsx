@@ -12,8 +12,8 @@ import {
 
 export type EventDataProps = {
     id?: number,
-    title: String,
-    description: String,
+    title: string,
+    description: string,
     availableSeats: number
 }
 
@@ -30,7 +30,7 @@ export function EventCard( props : EventDataProps) {
         <CardAction>
           <Badge variant="secondary">Available</Badge>
         </CardAction>
-        <CardTitle className="line-clamp">{props.title}</CardTitle>
+        <CardTitle className="line-clamp-1">{props.title}</CardTitle>
         <CardDescription className="line-clamp-3 col-span-2 text-justify">{props.description}</CardDescription>
       </CardHeader>
       <CardFooter>

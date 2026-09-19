@@ -6,6 +6,7 @@ import { Profile } from "@/lib/types/models";
 import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { getProfile } from "../actions/profile";
+import { Button } from "@/components/ui/button";
 
 
 export default function ManageEventPage(){
@@ -26,6 +27,11 @@ export default function ManageEventPage(){
     }, [])
 
     return (<>
-        <DataTable columns={columns} data={profiles ?? []} searchFilter={ {column_name: 'full_name', placeholder: "Search by name"}}/>
+      <h1 className="mb-4">Users Page</h1>
+      <DataTable 
+        columns={columns} 
+        data={profiles ?? []} 
+        searchFilter={ {column_name: 'full_name', placeholder: "Search by name"}} 
+      />
     </>);
 }

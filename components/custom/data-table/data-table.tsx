@@ -16,11 +16,13 @@ import { DataTablePagination } from "./paginations"
 import { DataTableViewOptions } from "./toggle"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
+import { ReactNodeType } from "@/lib/schema"
 
 interface DataTableProps<TData extends RowData> {
   columns: ColumnDef<DataTableFeatures, TData>[]
   data: TData[]
   searchFilter?: SearchFilterProps
+  actionButton?: React.ReactNode
 }
 
 interface SearchFilterProps {
@@ -31,7 +33,8 @@ interface SearchFilterProps {
 export function DataTable<TData extends RowData>({
   columns,
   data,
-  searchFilter
+  searchFilter,
+  actionButton
 }: DataTableProps<TData>) {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const table = useTable({
@@ -46,19 +49,22 @@ export function DataTable<TData extends RowData>({
 
     return (<>
         <div className="flex justify-between gap-2">
-            {
-                searchFilter && (
-                    <Input
-                        placeholder={searchFilter.placeholder}
-                        value={(table.getColumn(searchFilter.column_name)?.getFilterValue() as string) ?? ""}
-                        onChange={(event) =>
-                            table.getColumn(searchFilter.column_name)?.setFilterValue(event.target.value)
-                        }
-                        className="max-w-sm"
-                    />
-                )
-            }
-            <DataTableViewOptions table={table}/>
+            <div className="flex ">
+                <DataTableViewOptions table={table}/>
+                {
+                    searchFilter && (
+                        <Input
+                            placeholder={searchFilter.placeholder}
+                            value={(table.getColumn(searchFilter.column_name)?.getFilterValue() as string) ?? ""}
+                            onChange={(event) =>
+                                table.getColumn(searchFilter.column_name)?.setFilterValue(event.target.value)
+                            }
+                            className="max-w-sm"
+                        />
+                    )
+                }
+            </div>
+            {actionButton}
         </div>
         <div className="overflow-hidden rounded-md border my-4">
             <Table>

@@ -8,6 +8,7 @@ import { columns } from "@/app/events-page/[auth_uuid]/columns";
 import createClient from "@/lib/supabase/client";
 import { Event } from "@/lib/types/models";
 import { toast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
 
 type ManageEventSlug = {
     auth_uuid: string
@@ -49,6 +50,14 @@ export default function ManageEventPage(){
     }, [])
 
     return (<>
-        <DataTable columns={columns} data={events ?? []} searchFilter={ {column_name: 'title', placeholder: "Search by title"}}/>
+        <h1 className="mb-4">Events Page</h1>
+        <DataTable 
+            columns={columns} 
+            data={events ?? []} 
+            searchFilter={ {column_name: 'title', placeholder: "Search by title"}}
+            actionButton={
+                <Button onClick={() => router.push(`/events-page/${slug}/new`)}>Create Event</Button>
+            }
+        />
     </>);
 }

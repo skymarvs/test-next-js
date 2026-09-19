@@ -35,16 +35,16 @@ export default async function RootLayout({ children }: ReactNodeType) {
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <div className="mx-auto container">
           <UserMetadataProvider user={data?.claims.user_metadata}>
             <ViewTransition>
-              <HeaderPage user={data?.claims.user_metadata}  />
-              <div className="container mx-auto my-8">
-                {children}
+              <HeaderPage user={data?.claims.user_metadata} />
+              <div className="mx-auto container px-6">
+                <div className="container mx-auto my-8">
+                  {children}
+                </div>
               </div>
             </ViewTransition>
           </UserMetadataProvider>
-        </div>
         <Toaster />
       </body>
     </html>

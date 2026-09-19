@@ -57,6 +57,9 @@ export async function updateSession(request: NextRequest) {
   } else if(user && authPath.includes(request.nextUrl.pathname)){
     url.pathname = '/events-page'
     return NextResponse.redirect(url)
+  } else if(request.nextUrl.pathname === '/'){
+    url.pathname = '/events-page';
+    return NextResponse.redirect(url);
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're

@@ -1,31 +1,27 @@
 "use client"
 
-import { ChevronsDownUp, MoveRight, SquareArrowRightExit, Ticket } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { usePathname, useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "cn";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { UserMetadata } from "@supabase/supabase-js";
-import { toast } from "@/components/ui/toast";
 import signoutUser from "@/app/actions/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
+import { toast } from "@/components/ui/toast";
 import { Roles } from "@/lib/enums/roles";
+import { UserMetadata } from "@supabase/supabase-js";
+import { cn } from "cn";
+import { Menu, MoveRight, SquareArrowRightExit, Ticket } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 interface HeaderPageProps {
-    user : UserMetadata | undefined
+    user : UserMetadata | undefined,
 }
 
 export default function HeaderPage( { user } : HeaderPageProps){
-    const authTabs = ['/login-page', '/signup-page'];
     const router = useRouter();
-    const pathName = usePathname();
 
-    if(authTabs.includes(pathName)){
-        return;
-    }
-
-    const getInitials = (name: String) => {
+    const getInitials = (name: string) => {
         const words = name?.trim().split(/\s+/) || [];
         return words.length ? (words[0][0] + words[words.length - 1][0]).toUpperCase() : "";
     };
@@ -42,19 +38,18 @@ export default function HeaderPage( { user } : HeaderPageProps){
     }
 
     return(<>
-        <div className="p-5 text-lg flex items-center justify-between">
+        <div className="p-5 text-lg flex items-center justify-between sticky top-0 z-50 bg-white container mx-auto">
             <div className="flex items-center gap-4">
                 <Ticket className="text-primary"/>
                 <p className="text-primary">Test Logo</p>
-                <Separator orientation="vertical"/>
-                <div>
+                <div className="hidden md:block lg:block">
                     <Button variant="ghost" className="text-sm" onClick={() => router.push("/events-page")}>Events</Button>
                     {user?.user_role === Roles.Admin && (
                         <Button variant="ghost" className="text-sm" onClick={() => router.push("/users-page")}>Users</Button>
                     )}
                 </div>
             </div>
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-4 items-center hidden md:block lg:block">
                 { user == null 
                     ? (
                         <Button variant="outline" onClick={() => router.push("/login-page")}>
@@ -63,8 +58,8 @@ export default function HeaderPage( { user } : HeaderPageProps){
                         </Button>
                     )
                     : (
-                        <Popover>
-                            <PopoverTrigger className="" nativeButton={false} render={
+                        <DropdownMenu>
+                            <DropdownMenuTrigger nativeButton={false} render={
                                 <div className={cn(
                                     "flex gap-6 cursor-pointer p-8 w-max",
                                     buttonVariants({variant: "ghost"})
@@ -77,18 +72,79 @@ export default function HeaderPage( { user } : HeaderPageProps){
                                         <span>{user?.full_name}</span><br/>
                                         <span className="text-xs text-foreground/50">{user?.email}</span>
                                     </div>
-                                    <ChevronsDownUp />
                                 </div>
-                            }/>
-                            <PopoverContent align="end" className="w-[var(--anchor-width)]">
-                                <Button variant="ghost" onClick={handleSignOutBtnClick}>
-                                    Sign-out
-                                    <SquareArrowRightExit />
-                                </Button>
-                            </PopoverContent>
-                        </Popover>
+                            }>
+                                Open
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuGroup>
+                                    <DropdownMenuLabel>Action</DropdownMenuLabel>
+                                    <DropdownMenuItem>
+                                        <Button variant="ghost" onClick={handleSignOutBtnClick} className="justify-between w-full">
+                                            Sign-out
+                                            <SquareArrowRightExit />
+                                        </Button>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     )
                 }
+            </div>
+            <div className=" md:hidden lg:hidden">
+                <Sheet>
+                    <SheetTrigger><Menu /></SheetTrigger>
+                    <SheetContent>
+                        <SheetHeader>
+                            <SheetTitle>Menu</SheetTitle>
+                            <SheetDescription>Select one to navigate to</SheetDescription>
+                        </SheetHeader>
+                        <Separator/>
+                        <div className="mx-4 my-4 grid gap-2" >
+                            <SheetClose nativeButton={false} render={(props) => (
+                                <div {...props}>
+                                    <Button variant="link" className="text-sm w-full justify-start" onClick={() => router.push("/events-page")}>Events</Button>
+                                    {user?.user_role === Roles.Admin && (
+                                        <Button variant="link" className="text-sm w-full justify-start" onClick={() => router.push("/users-page")}>Users</Button>
+                                    )}
+                                </div>
+                            )}>
+                            </SheetClose>
+                        </div>
+                        <SheetFooter>
+                            {user == null ? (
+                                <SheetClose render={
+                                    <Button onClick={() => router.push('/login-page')}>
+                                        Sign-in
+                                        <MoveRight />
+                                    </Button>
+                                } >
+                                </SheetClose>
+                            ) : (
+                                <>
+                                    <div className="flex gap-2 m-0 cursor-pointer w-max">
+                                        <Avatar size="lg">
+                                            <AvatarImage src={user?.picture}></AvatarImage>
+                                            <AvatarFallback>{getInitials(user?.full_name)}</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <span>{user?.full_name}</span><br/>
+                                            <span className="text-xs text-foreground/50">{user?.email}</span>
+                                        </div>
+                                    </div>
+                                    <Separator/>
+                                    <SheetClose render={
+                                        <Button onClick={handleSignOutBtnClick}>
+                                            Sign-out
+                                            <SquareArrowRightExit />
+                                        </Button>
+                                    }>
+                                    </SheetClose>
+                                </>
+                            )}
+                        </SheetFooter>
+                    </SheetContent>
+                </Sheet>
             </div>
         </div>
         <Separator />
