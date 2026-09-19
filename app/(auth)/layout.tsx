@@ -1,6 +1,6 @@
 import { Marker, MarkerContent } from "@/components/ui/marker";
 import { ReactNodeType } from "@/lib/schema";
-import OAuthLogin from "@/app/(auth)/common/oauth-login";
+import OAuthLogin from "@/app/(auth)/_components/oauth-login";
 
 export default function AuthLayout({ children }: ReactNodeType) {
   return (

@@ -98,7 +98,7 @@ export default function SignInPage() {
         <Button
           variant="link"
           className="px-1"
-          onClick={() => router.push("/signup-page")}
+          onClick={() => router.push("/signup")}
         >
           Sign-up
         </Button>
