@@ -16,7 +16,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 const eventSchema = z.object({
-  image: z.instanceof(File, { message: "Please upload an image" })
+  image: z
+    .instanceof(File, { message: "Please upload an image" })
     .refine((file) => file.type.startsWith("image/"), "File must be an image"),
   title: z.string().trim().min(1, "Title is required"),
   description: z.string().trim().min(1, "Description is required"),

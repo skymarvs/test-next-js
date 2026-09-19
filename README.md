@@ -34,6 +34,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
 # test-next-js
 
 ## Supabase Remote Development
@@ -45,7 +46,7 @@ Note: you need docker installed for the remote to compare migration with your lo
 # login to supabase
 npx supabase login
 
-# reference project 
+# reference project
 npx supabase link <project-reference>
 
 # create initial migration

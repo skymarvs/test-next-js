@@ -23,12 +23,14 @@
 ### Task 1: Add Prettier and run a formatting-only pass
 
 **Files:**
+
 - Create: `.prettierrc`
 - Create: `.prettierignore`
 - Modify: `package.json` (add `prettier` devDependency and `format` script)
 - Modify: all existing `.ts`/`.tsx` files under `app/`, `components/`, `lib/`, `contexts/` (formatting only, via `prettier --write`)
 
 **Interfaces:**
+
 - Produces: a `format` npm script (`prettier --write .`) later tasks and future contributors can run.
 
 - [ ] **Step 1: Create the Prettier config**
@@ -109,6 +111,7 @@ git commit -m "chore: add Prettier and format existing codebase"
 ### Task 2: Rename auth routes and colocate their components
 
 **Files:**
+
 - Move: `app/(auth)/login-page/page.tsx` → `app/(auth)/login/page.tsx`
 - Move: `app/(auth)/signup-page/page.tsx` → `app/(auth)/signup/page.tsx`
 - Move: `app/(auth)/common/oauth-login.tsx` → `app/(auth)/_components/oauth-login.tsx`
@@ -117,6 +120,7 @@ git commit -m "chore: add Prettier and format existing codebase"
 - Modify: `app/(auth)/signup/page.tsx` (post-move)
 
 **Interfaces:**
+
 - Produces: routes `/login` and `/signup` (previously `/login-page`, `/signup-page`); `OAuthLogin` now imported from `@/app/(auth)/_components/oauth-login`.
 - Consumes: nothing from other tasks. `/events-page` still exists at this point (renamed in Task 3), so the `router.push("/events-page")` calls in these files stay unchanged for now — they'll be fixed in Task 3.
 
@@ -149,25 +153,41 @@ import OAuthLogin from "@/app/(auth)/_components/oauth-login";
 Modify `app/(auth)/login/page.tsx` line 87 from:
 
 ```tsx
-            <Button variant="link" className="px-1" onClick={() => router.push("/signup-page")}>Sign-up</Button>
+<Button
+  variant="link"
+  className="px-1"
+  onClick={() => router.push("/signup-page")}
+>
+  Sign-up
+</Button>
 ```
 
 to:
 
 ```tsx
-            <Button variant="link" className="px-1" onClick={() => router.push("/signup")}>Sign-up</Button>
+<Button variant="link" className="px-1" onClick={() => router.push("/signup")}>
+  Sign-up
+</Button>
 ```
 
 Modify `app/(auth)/signup/page.tsx` line 150 from:
 
 ```tsx
-            <Button variant="link" className="px-1" onClick={() => router.push("/login-page")}>Sign-in</Button>
+<Button
+  variant="link"
+  className="px-1"
+  onClick={() => router.push("/login-page")}
+>
+  Sign-in
+</Button>
 ```
 
 to:
 
 ```tsx
-            <Button variant="link" className="px-1" onClick={() => router.push("/login")}>Sign-in</Button>
+<Button variant="link" className="px-1" onClick={() => router.push("/login")}>
+  Sign-in
+</Button>
 ```
 
 - [ ] **Step 4: Verify the build**
@@ -187,6 +207,7 @@ git commit -m "refactor: rename auth routes, colocate oauth-login under _compone
 ### Task 3: Rename events route and colocate its components
 
 **Files:**
+
 - Move: `app/events-page/page.tsx` → `app/events/page.tsx`
 - Move: `app/events-page/event-card.tsx` → `app/events/_components/event-card.tsx`
 - Move: `app/events-page/[auth_uuid]/page.tsx` → `app/events/[auth_uuid]/page.tsx`
@@ -199,6 +220,7 @@ git commit -m "refactor: rename auth routes, colocate oauth-login under _compone
 - Modify: `app/(auth)/_components/oauth-login.tsx`
 
 **Interfaces:**
+
 - Produces: route `/events` and `/events/[auth_uuid]` (previously `/events-page`, `/events-page/[auth_uuid]`); `columns` now imported from `@/app/events/[auth_uuid]/_components/columns`; `EventCard`/`EventDataProps` now imported from `./_components/event-card`.
 - Consumes: nothing new from Task 2 (auth routes already renamed, but `/events-page` references inside auth files are fixed here).
 
@@ -229,13 +251,20 @@ import { EventCard, EventDataProps } from "./_components/event-card";
 Modify line 51 from:
 
 ```tsx
-                <Button size="lg" onClick={() => router.push(`/events-page/${userMetadata?.sub}`)}>Manage Events</Button>
+<Button
+  size="lg"
+  onClick={() => router.push(`/events-page/${userMetadata?.sub}`)}
+>
+  Manage Events
+</Button>
 ```
 
 to:
 
 ```tsx
-                <Button size="lg" onClick={() => router.push(`/events/${userMetadata?.sub}`)}>Manage Events</Button>
+<Button size="lg" onClick={() => router.push(`/events/${userMetadata?.sub}`)}>
+  Manage Events
+</Button>
 ```
 
 - [ ] **Step 3: Fix imports and links in `app/events/[auth_uuid]/page.tsx`**
@@ -255,13 +284,15 @@ import { columns } from "@/app/events/[auth_uuid]/_components/columns";
 Modify line 59 from:
 
 ```tsx
-                <Button onClick={() => router.push(`/events-page/${slug}/new`)}>Create Event</Button>
+<Button onClick={() => router.push(`/events-page/${slug}/new`)}>
+  Create Event
+</Button>
 ```
 
 to:
 
 ```tsx
-                <Button onClick={() => router.push(`/events/${slug}/new`)}>Create Event</Button>
+<Button onClick={() => router.push(`/events/${slug}/new`)}>Create Event</Button>
 ```
 
 - [ ] **Step 4: Fix the post-auth redirect in login/signup/oauth-login**
@@ -269,25 +300,25 @@ to:
 Modify `app/(auth)/login/page.tsx` line 27 from:
 
 ```tsx
-                router.push("/events-page")
+router.push("/events-page");
 ```
 
 to:
 
 ```tsx
-                router.push("/events")
+router.push("/events");
 ```
 
 Modify `app/(auth)/signup/page.tsx` line 30 from:
 
 ```tsx
-                router.push("/events-page")
+router.push("/events-page");
 ```
 
 to:
 
 ```tsx
-                router.push("/events")
+router.push("/events");
 ```
 
 Modify `app/(auth)/_components/oauth-login.tsx` line 14 from:
@@ -319,6 +350,7 @@ git commit -m "refactor: rename events routes, colocate event-card and columns u
 ### Task 4: Rename users route, colocate its component, and fix remaining shared references
 
 **Files:**
+
 - Move: `app/users-page/page.tsx` → `app/users/page.tsx`
 - Move: `app/users-page/columns.tsx` → `app/users/_components/columns.tsx`
 - Modify: `app/users/page.tsx`
@@ -326,6 +358,7 @@ git commit -m "refactor: rename events routes, colocate event-card and columns u
 - Modify: `lib/supabase/proxy.ts`
 
 **Interfaces:**
+
 - Produces: route `/users` (previously `/users-page`); `columns` now imported from `./_components/columns`; `getProfile` now imported via the `@/` alias instead of a parent-relative import.
 - Consumes: the `/events`, `/login`, `/signup` route names produced by Tasks 2–3 (this task updates the last remaining references to old route names in shared files).
 
@@ -358,39 +391,97 @@ import { getProfile } from "@/app/actions/profile";
 Modify lines 14-15 from:
 
 ```tsx
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 ```
 
 to:
 
 ```tsx
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 ```
 
 Modify line 46 from:
 
 ```tsx
-                    <Button variant="ghost" className="text-sm" onClick={() => router.push("/events-page")}>Events</Button>
+<Button
+  variant="ghost"
+  className="text-sm"
+  onClick={() => router.push("/events-page")}
+>
+  Events
+</Button>
 ```
 
 to:
 
 ```tsx
-                    <Button variant="ghost" className="text-sm" onClick={() => router.push("/events")}>Events</Button>
+<Button
+  variant="ghost"
+  className="text-sm"
+  onClick={() => router.push("/events")}
+>
+  Events
+</Button>
 ```
 
 Modify line 48 from:
 
 ```tsx
-                        <Button variant="ghost" className="text-sm" onClick={() => router.push("/users-page")}>Users</Button>
+<Button
+  variant="ghost"
+  className="text-sm"
+  onClick={() => router.push("/users-page")}
+>
+  Users
+</Button>
 ```
 
 to:
 
 ```tsx
-                        <Button variant="ghost" className="text-sm" onClick={() => router.push("/users")}>Users</Button>
+<Button
+  variant="ghost"
+  className="text-sm"
+  onClick={() => router.push("/users")}
+>
+  Users
+</Button>
 ```
 
 Modify line 55 from:
@@ -408,25 +499,49 @@ to:
 Modify line 106 from:
 
 ```tsx
-                                    <Button variant="link" className="text-sm w-full justify-start" onClick={() => router.push("/events-page")}>Events</Button>
+<Button
+  variant="link"
+  className="text-sm w-full justify-start"
+  onClick={() => router.push("/events-page")}
+>
+  Events
+</Button>
 ```
 
 to:
 
 ```tsx
-                                    <Button variant="link" className="text-sm w-full justify-start" onClick={() => router.push("/events")}>Events</Button>
+<Button
+  variant="link"
+  className="text-sm w-full justify-start"
+  onClick={() => router.push("/events")}
+>
+  Events
+</Button>
 ```
 
 Modify line 108 from:
 
 ```tsx
-                                        <Button variant="link" className="text-sm w-full justify-start" onClick={() => router.push("/users-page")}>Users</Button>
+<Button
+  variant="link"
+  className="text-sm w-full justify-start"
+  onClick={() => router.push("/users-page")}
+>
+  Users
+</Button>
 ```
 
 to:
 
 ```tsx
-                                        <Button variant="link" className="text-sm w-full justify-start" onClick={() => router.push("/users")}>Users</Button>
+<Button
+  variant="link"
+  className="text-sm w-full justify-start"
+  onClick={() => router.push("/users")}
+>
+  Users
+</Button>
 ```
 
 Modify line 117 from:
@@ -446,47 +561,39 @@ to:
 Modify lines 45-50 from:
 
 ```ts
-    const protectedPath = [
-        '/users-page'
-    ]
-    const authPath = [
-        '/login-page','/signup-page'
-    ]
+const protectedPath = ["/users-page"];
+const authPath = ["/login-page", "/signup-page"];
 ```
 
 to:
 
 ```ts
-    const protectedPath = [
-        '/users'
-    ]
-    const authPath = [
-        '/login','/signup'
-    ]
+const protectedPath = ["/users"];
+const authPath = ["/login", "/signup"];
 ```
 
 Modify line 58 from:
 
 ```ts
-    url.pathname = '/events-page'
+url.pathname = "/events-page";
 ```
 
 to:
 
 ```ts
-    url.pathname = '/events'
+url.pathname = "/events";
 ```
 
 Modify line 61 from:
 
 ```ts
-    url.pathname = '/events-page';
+url.pathname = "/events-page";
 ```
 
 to:
 
 ```ts
-    url.pathname = '/events';
+url.pathname = "/events";
 ```
 
 - [ ] **Step 5: Confirm no old route names remain**
@@ -514,10 +621,12 @@ git commit -m "refactor: rename users route, colocate columns, fix remaining rou
 ### Task 5: Write coding standards doc and link it from CLAUDE.md
 
 **Files:**
+
 - Create: `docs/CODING_STANDARDS.md`
 - Modify: `CLAUDE.md`
 
 **Interfaces:**
+
 - Consumes: the conventions already applied in Tasks 1–4 (this task documents what was just done, it doesn't change code behavior).
 
 - [ ] **Step 1: Write the standards doc**

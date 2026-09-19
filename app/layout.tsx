@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toast";
 import UserMetadataProvider from "@/contexts/role-provider";
 import { ViewTransition } from "react";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,19 +32,24 @@ export default async function RootLayout({ children }: ReactNodeType) {
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
+      className={cn(
+        "h-full",
+        "antialiased",
+        geistSans.variable,
+        geistMono.variable,
+        "font-sans",
+        inter.variable
+      )}
     >
       <body className="min-h-full flex flex-col">
-          <UserMetadataProvider user={data?.claims.user_metadata}>
-            <ViewTransition>
-              <HeaderPage user={data?.claims.user_metadata} />
-              <div className="mx-auto container px-6">
-                <div className="container mx-auto my-8">
-                  {children}
-                </div>
-              </div>
-            </ViewTransition>
-          </UserMetadataProvider>
+        <UserMetadataProvider user={data?.claims.user_metadata}>
+          <ViewTransition>
+            <HeaderPage user={data?.claims.user_metadata} />
+            <div className="mx-auto container px-6">
+              <div className="container mx-auto my-8">{children}</div>
+            </div>
+          </ViewTransition>
+        </UserMetadataProvider>
         <Toaster />
       </body>
     </html>

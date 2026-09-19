@@ -35,14 +35,14 @@ sessions) to follow, so each new file reintroduces the same inconsistencies.
 Drop the redundant `-page` suffix from route folders, since a folder under
 `app/` is already a route by definition:
 
-| Before | After |
-|---|---|
-| `app/events-page/` | `app/events/` |
-| `app/events-page/[auth_uuid]/` | `app/events/[auth_uuid]/` |
+| Before                             | After                         |
+| ---------------------------------- | ----------------------------- |
+| `app/events-page/`                 | `app/events/`                 |
+| `app/events-page/[auth_uuid]/`     | `app/events/[auth_uuid]/`     |
 | `app/events-page/[auth_uuid]/new/` | `app/events/[auth_uuid]/new/` |
-| `app/users-page/` | `app/users/` |
-| `app/(auth)/login-page/` | `app/(auth)/login/` |
-| `app/(auth)/signup-page/` | `app/(auth)/signup/` |
+| `app/users-page/`                  | `app/users/`                  |
+| `app/(auth)/login-page/`           | `app/(auth)/login/`           |
+| `app/(auth)/signup-page/`          | `app/(auth)/signup/`          |
 
 The `(auth)` route group and all other route segments (`app/api/...`) are
 unaffected.
