@@ -4,7 +4,7 @@ import { DataTable } from "@/components/custom/data-table/data-table";
 import { useUserMetadata } from "@/contexts/role-provider";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { columns } from "@/app/events-page/[auth_uuid]/columns";
+import { columns } from "@/app/events/[auth_uuid]/_components/columns";
 import createClient from "@/lib/supabase/client";
 import { Event } from "@/lib/types/models";
 import { toast } from "@/components/ui/toast";
@@ -57,7 +57,7 @@ export default function ManageEventPage() {
         data={events ?? []}
         searchFilter={{ column_name: "title", placeholder: "Search by title" }}
         actionButton={
-          <Button onClick={() => router.push(`/events-page/${slug}/new`)}>
+          <Button onClick={() => router.push(`/events/${slug}/new`)}>
             Create Event
           </Button>
         }

@@ -1,6 +1,6 @@
 "use client";
 
-import { EventCard, EventDataProps } from "./event-card";
+import { EventCard, EventDataProps } from "./_components/event-card";
 import { Button } from "@/components/ui/button";
 import { useUserMetadata } from "@/contexts/role-provider";
 import { useRouter } from "next/navigation";
@@ -52,7 +52,7 @@ export default function EventsPage() {
         {userMetadata && (
           <Button
             size="lg"
-            onClick={() => router.push(`/events-page/${userMetadata?.sub}`)}
+            onClick={() => router.push(`/events/${userMetadata?.sub}`)}
           >
             Manage Events
           </Button>

@@ -35,7 +35,7 @@ export default function SignUpPage() {
     toast.promise(signupUser(formData), {
       loading: "Signing up...",
       success: () => {
-        router.push("/events-page");
+        router.push("/events");
         return "Sign-up successful.";
       },
       error: (err) => `Failed: ${err.message}`,

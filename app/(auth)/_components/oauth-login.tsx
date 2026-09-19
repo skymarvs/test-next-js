@@ -10,7 +10,7 @@ export default function OAuthLogin() {
     await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/callback?next=/events-page`,
+        redirectTo: `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/callback?next=/events`,
         queryParams: {
           access_type: "offline",
           prompt: "consent",
