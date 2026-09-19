@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { type ReactTable, type RowData } from "@tanstack/react-table"
-import { Settings2 } from "lucide-react"
+import { type ReactTable, type RowData } from "@tanstack/react-table";
+import { Settings2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -12,30 +12,32 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
-import { type DataTableFeatures } from "@/components/custom/data-table/data-table-features"
+import { type DataTableFeatures } from "@/components/custom/data-table/data-table-features";
 
 export function DataTableViewOptions<TData extends RowData>({
   table,
 }: {
-  table: ReactTable<DataTableFeatures, TData>
+  table: ReactTable<DataTableFeatures, TData>;
 }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto hidden h-8 lg:flex"
-        >
-          <Settings2 />
-          View
-        </Button>
-      }/>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto hidden h-8 lg:flex"
+          >
+            <Settings2 />
+            View
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end" className="w-[150px]">
         <DropdownMenuGroup>
-            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+          <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {table
@@ -54,9 +56,9 @@ export function DataTableViewOptions<TData extends RowData>({
               >
                 {column.id}
               </DropdownMenuCheckboxItem>
-            )
+            );
           })}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

@@ -1,6 +1,5 @@
-
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -8,16 +7,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 export type EventDataProps = {
-    id?: number,
-    title: String,
-    description: String,
-    availableSeats: number
-}
+  id?: number;
+  title: string;
+  description: string;
+  availableSeats: number;
+};
 
-export function EventCard( props : EventDataProps) {
+export function EventCard(props: EventDataProps) {
   return (
     <Card className="relative mx-auto w-full max-w-sm pt-0">
       <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
@@ -30,12 +29,14 @@ export function EventCard( props : EventDataProps) {
         <CardAction>
           <Badge variant="secondary">Available</Badge>
         </CardAction>
-        <CardTitle className="line-clamp">{props.title}</CardTitle>
-        <CardDescription className="line-clamp-3 col-span-2 text-justify">{props.description}</CardDescription>
+        <CardTitle className="line-clamp-1">{props.title}</CardTitle>
+        <CardDescription className="line-clamp-3 col-span-2 text-justify">
+          {props.description}
+        </CardDescription>
       </CardHeader>
       <CardFooter>
         <Button className="w-full">View Event</Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

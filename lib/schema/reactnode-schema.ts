@@ -1,4 +1,3 @@
-
 export type ReactNodeType = {
-    children: React.ReactNode
-}
+  children: React.ReactNode;
+};

@@ -1,17 +1,19 @@
 import { Marker, MarkerContent } from "@/components/ui/marker";
 import { ReactNodeType } from "@/lib/schema";
-import OAuthLogin from "@/app/(auth)/common/oauth-login";
+import OAuthLogin from "@/app/(auth)/_components/oauth-login";
 
-export default function AuthLayout({children} : ReactNodeType){
-    return (<>
-        <div className="flex justify-center align-items-center items-center min-h-screen">
-            <div className="grid gap-1 w-100">
-                {children}
-                <Marker variant="separator" className="my-2">
-                    <MarkerContent>or continue with</MarkerContent>
-                </Marker>
-                <OAuthLogin />
-            </div>
+export default function AuthLayout({ children }: ReactNodeType) {
+  return (
+    <>
+      <div className="flex justify-center align-items-center items-center min-h-[75vh]">
+        <div className="grid gap-1 w-100">
+          {children}
+          <Marker variant="separator" className="my-2">
+            <MarkerContent>or continue with</MarkerContent>
+          </Marker>
+          <OAuthLogin />
         </div>
-    </>)
+      </div>
+    </>
+  );
 }
