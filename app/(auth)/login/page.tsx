@@ -1,5 +1,9 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+
 import { loginUser } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { LoginSchema, LoginSchemaType } from "@/lib/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { Controller, useForm } from "react-hook-form";
 
 export default function SignInPage() {
   const router = useRouter();

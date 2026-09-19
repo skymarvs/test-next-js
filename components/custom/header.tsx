@@ -1,20 +1,16 @@
 "use client";
 
-import signoutUser from "@/app/actions/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/toast";
-import { Roles } from "@/lib/enums/roles";
 import { UserMetadata } from "@supabase/supabase-js";
 import { cn } from "cn";
 import { Menu, MoveRight, SquareArrowRightExit, Ticket } from "lucide-react";
 import { useRouter } from "next/navigation";
+
+import signoutUser from "@/app/actions/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { toast } from "@/components/ui/toast";
+import { Roles } from "@/lib/enums/roles";
 import {
   Sheet,
   SheetClose,
@@ -31,7 +27,6 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 

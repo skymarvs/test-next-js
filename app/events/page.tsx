@@ -1,9 +1,11 @@
 "use client";
 
-import { EventCard, EventDataProps } from "./_components/event-card";
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { useUserMetadata } from "@/contexts/role-provider";
-import { useRouter } from "next/navigation";
+
+import { EventCard, EventDataProps } from "./_components/event-card";
 
 const getData = (): EventDataProps[] => {
   return [

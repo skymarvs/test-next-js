@@ -1,12 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { DataTable } from "@/components/custom/data-table/data-table";
 import { toast } from "@/components/ui/toast";
 import { Profile } from "@/lib/types/models";
-import { useEffect, useState } from "react";
-import { columns } from "./_components/columns";
 import { getProfile } from "@/app/actions/profile";
-import { Button } from "@/components/ui/button";
+
+import { columns } from "./_components/columns";
 
 export default function ManageEventPage() {
   const [profiles, setProfiles] = useState<Profile[] | null>([]);
