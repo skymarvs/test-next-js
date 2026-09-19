@@ -4,8 +4,8 @@ import { DataTable } from "@/components/custom/data-table/data-table";
 import { toast } from "@/components/ui/toast";
 import { Profile } from "@/lib/types/models";
 import { useEffect, useState } from "react";
-import { columns } from "./columns";
-import { getProfile } from "../actions/profile";
+import { columns } from "./_components/columns";
+import { getProfile } from "@/app/actions/profile";
 import { Button } from "@/components/ui/button";
 
 export default function ManageEventPage() {

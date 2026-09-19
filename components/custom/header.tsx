@@ -24,7 +24,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../ui/sheet";
+} from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +33,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderPageProps {
   user: UserMetadata | undefined;
@@ -70,7 +70,7 @@ export default function HeaderPage({ user }: HeaderPageProps) {
             <Button
               variant="ghost"
               className="text-sm"
-              onClick={() => router.push("/events-page")}
+              onClick={() => router.push("/events")}
             >
               Events
             </Button>
@@ -78,7 +78,7 @@ export default function HeaderPage({ user }: HeaderPageProps) {
               <Button
                 variant="ghost"
                 className="text-sm"
-                onClick={() => router.push("/users-page")}
+                onClick={() => router.push("/users")}
               >
                 Users
               </Button>
@@ -89,7 +89,7 @@ export default function HeaderPage({ user }: HeaderPageProps) {
           {user == null ? (
             <Button
               variant="outline"
-              onClick={() => router.push("/login-page")}
+              onClick={() => router.push("/login")}
             >
               Sign-in
               <MoveRight />
@@ -160,7 +160,7 @@ export default function HeaderPage({ user }: HeaderPageProps) {
                       <Button
                         variant="link"
                         className="text-sm w-full justify-start"
-                        onClick={() => router.push("/events-page")}
+                        onClick={() => router.push("/events")}
                       >
                         Events
                       </Button>
@@ -168,7 +168,7 @@ export default function HeaderPage({ user }: HeaderPageProps) {
                         <Button
                           variant="link"
                           className="text-sm w-full justify-start"
-                          onClick={() => router.push("/users-page")}
+                          onClick={() => router.push("/users")}
                         >
                           Users
                         </Button>
@@ -181,7 +181,7 @@ export default function HeaderPage({ user }: HeaderPageProps) {
                 {user == null ? (
                   <SheetClose
                     render={
-                      <Button onClick={() => router.push("/login-page")}>
+                      <Button onClick={() => router.push("/login")}>
                         Sign-in
                         <MoveRight />
                       </Button>
