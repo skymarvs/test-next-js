@@ -57,134 +57,50 @@ export default function HeaderPage({ user }: HeaderPageProps) {
 
   return (
     <>
-      <div className="p-5 text-lg flex items-center justify-between sticky top-0 z-50 bg-white container mx-auto">
-        <div className="flex items-center gap-4">
-          <Ticket className="text-primary" />
-          <p className="text-primary">Test Logo</p>
-          <div className="hidden md:block lg:block">
-            <Button
-              variant="ghost"
-              className="text-sm"
-              onClick={() => router.push("/events")}
-            >
-              Events
-            </Button>
-            {user?.user_role === Roles.Admin && (
+      <div className="top-0 z-50 sticky">
+        <div className="p-5 text-lg flex items-center justify-between bg-white container mx-auto">
+          <div className="flex items-center gap-4">
+            <Ticket className="text-primary" />
+            <p className="text-primary">Test Logo</p>
+            <div className="hidden md:block lg:block">
               <Button
                 variant="ghost"
                 className="text-sm"
-                onClick={() => router.push("/users")}
+                onClick={() => router.push("/events")}
               >
-                Users
+                Events
               </Button>
-            )}
+              {user?.user_role === Roles.Admin && (
+                <Button
+                  variant="ghost"
+                  className="text-sm"
+                  onClick={() => router.push("/users")}
+                >
+                  Users
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="flex gap-4 items-center hidden md:block lg:block">
-          {user == null ? (
-            <Button
-              variant="outline"
-              onClick={() => router.push("/login")}
-            >
-              Sign-in
-              <MoveRight />
-            </Button>
-          ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                nativeButton={false}
-                render={
-                  <div
-                    className={cn(
-                      "flex gap-6 cursor-pointer p-8 w-max",
-                      buttonVariants({ variant: "ghost" })
-                    )}
-                  >
-                    <Avatar size="lg">
-                      <AvatarImage src={user?.picture}></AvatarImage>
-                      <AvatarFallback>
-                        {getInitials(user?.full_name)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <span>{user?.full_name}</span>
-                      <br />
-                      <span className="text-xs text-foreground/50">
-                        {user?.email}
-                      </span>
-                    </div>
-                  </div>
-                }
+          <div className="flex gap-4 items-center hidden md:block lg:block">
+            {user == null ? (
+              <Button
+                variant="outline"
+                onClick={() => router.push("/login")}
               >
-                Open
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>Action</DropdownMenuLabel>
-                  <DropdownMenuItem>
-                    <Button
-                      variant="ghost"
-                      onClick={handleSignOutBtnClick}
-                      className="justify-between w-full"
-                    >
-                      Sign-out
-                      <SquareArrowRightExit />
-                    </Button>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-        <div className=" md:hidden lg:hidden">
-          <Sheet>
-            <SheetTrigger>
-              <Menu />
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
-                <SheetDescription>Select one to navigate to</SheetDescription>
-              </SheetHeader>
-              <Separator />
-              <div className="mx-4 my-4 grid gap-2">
-                <SheetClose
+                Sign-in
+                <MoveRight />
+              </Button>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger
                   nativeButton={false}
-                  render={(props) => (
-                    <div {...props}>
-                      <Button
-                        variant="link"
-                        className="text-sm w-full justify-start"
-                        onClick={() => router.push("/events")}
-                      >
-                        Events
-                      </Button>
-                      {user?.user_role === Roles.Admin && (
-                        <Button
-                          variant="link"
-                          className="text-sm w-full justify-start"
-                          onClick={() => router.push("/users")}
-                        >
-                          Users
-                        </Button>
+                  render={
+                    <div
+                      className={cn(
+                        "flex gap-6 cursor-pointer p-8 w-max",
+                        buttonVariants({ variant: "ghost" })
                       )}
-                    </div>
-                  )}
-                ></SheetClose>
-              </div>
-              <SheetFooter>
-                {user == null ? (
-                  <SheetClose
-                    render={
-                      <Button onClick={() => router.push("/login")}>
-                        Sign-in
-                        <MoveRight />
-                      </Button>
-                    }
-                  ></SheetClose>
-                ) : (
-                  <>
-                    <div className="flex gap-2 m-0 cursor-pointer w-max">
+                    >
                       <Avatar size="lg">
                         <AvatarImage src={user?.picture}></AvatarImage>
                         <AvatarFallback>
@@ -199,23 +115,109 @@ export default function HeaderPage({ user }: HeaderPageProps) {
                         </span>
                       </div>
                     </div>
-                    <Separator />
+                  }
+                >
+                  Open
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel>Action</DropdownMenuLabel>
+                    <DropdownMenuItem>
+                      <Button
+                        variant="ghost"
+                        onClick={handleSignOutBtnClick}
+                        className="justify-between w-full"
+                      >
+                        Sign-out
+                        <SquareArrowRightExit />
+                      </Button>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
+          <div className=" md:hidden lg:hidden">
+            <Sheet>
+              <SheetTrigger>
+                <Menu />
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Menu</SheetTitle>
+                  <SheetDescription>Select one to navigate to</SheetDescription>
+                </SheetHeader>
+                <Separator />
+                <div className="mx-4 my-4 grid gap-2">
+                  <SheetClose
+                    nativeButton={false}
+                    render={(props) => (
+                      <div {...props}>
+                        <Button
+                          variant="link"
+                          className="text-sm w-full justify-start"
+                          onClick={() => router.push("/events")}
+                        >
+                          Events
+                        </Button>
+                        {user?.user_role === Roles.Admin && (
+                          <Button
+                            variant="link"
+                            className="text-sm w-full justify-start"
+                            onClick={() => router.push("/users")}
+                          >
+                            Users
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  ></SheetClose>
+                </div>
+                <SheetFooter>
+                  {user == null ? (
                     <SheetClose
                       render={
-                        <Button onClick={handleSignOutBtnClick}>
-                          Sign-out
-                          <SquareArrowRightExit />
+                        <Button onClick={() => router.push("/login")}>
+                          Sign-in
+                          <MoveRight />
                         </Button>
                       }
                     ></SheetClose>
-                  </>
-                )}
-              </SheetFooter>
-            </SheetContent>
-          </Sheet>
+                  ) : (
+                    <>
+                      <div className="flex gap-2 m-0 cursor-pointer w-max">
+                        <Avatar size="lg">
+                          <AvatarImage src={user?.picture}></AvatarImage>
+                          <AvatarFallback>
+                            {getInitials(user?.full_name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <span>{user?.full_name}</span>
+                          <br />
+                          <span className="text-xs text-foreground/50">
+                            {user?.email}
+                          </span>
+                        </div>
+                      </div>
+                      <Separator />
+                      <SheetClose
+                        render={
+                          <Button onClick={handleSignOutBtnClick}>
+                            Sign-out
+                            <SquareArrowRightExit />
+                          </Button>
+                        }
+                      ></SheetClose>
+                    </>
+                  )}
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
+        <Separator />
       </div>
-      <Separator />
     </>
   );
 }
