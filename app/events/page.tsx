@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { useUserMetadata } from "@/contexts/role-provider";
+import { useAuthPayload } from "@/contexts/auth-provider";
 
 import { EventCard, EventDataProps } from "./_components/event-card";
 
@@ -44,17 +44,17 @@ const getData = (): EventDataProps[] => {
 };
 
 export default function EventsPage() {
-  const userMetadata = useUserMetadata();
+  const auth = useAuthPayload();
   const events = getData();
   const router = useRouter();
   return (
     <>
       <div className="flex items-end justify-between mb-4">
         <h1>Events</h1>
-        {userMetadata && (
+        {auth && (
           <Button
             size="lg"
-            onClick={() => router.push(`/events/${userMetadata?.sub}`)}
+            onClick={() => router.push(`/events/${auth?.sub}`)}
           >
             Manage Events
           </Button>

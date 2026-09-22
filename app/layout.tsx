@@ -6,7 +6,7 @@ import { ReactNodeType } from "@/lib/schema";
 import HeaderPage from "@/components/custom/header";
 import createClient from "@/lib/supabase/server";
 import { Toaster } from "@/components/ui/toast";
-import UserMetadataProvider from "@/contexts/role-provider";
+import UserMetadataProvider from "@/contexts/auth-provider";
 import { ViewTransition } from "react";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -42,7 +42,7 @@ export default async function RootLayout({ children }: ReactNodeType) {
       )}
     >
       <body className="min-h-full flex flex-col">
-        <UserMetadataProvider user={data?.claims.user_metadata}>
+        <UserMetadataProvider payload={data?.claims}>
           <ViewTransition>
             <HeaderPage user={data?.claims.user_metadata} />
             <div className="mx-auto container px-6">

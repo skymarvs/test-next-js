@@ -1,6 +1,6 @@
 "use client";
 
-import { UserMetadata } from "@supabase/supabase-js";
+import { JwtPayload, UserMetadata } from "@supabase/supabase-js";
 import { createContext, useContext } from "react";
 
 type UserMetadataProviderType = UserMetadataContextType & {
@@ -8,25 +8,24 @@ type UserMetadataProviderType = UserMetadataContextType & {
 };
 
 interface UserMetadataContextType {
-  user: UserMetadata | undefined;
+  payload: JwtPayload | undefined;
 }
 
 const UserMetadataProviderContext = createContext<UserMetadataContextType>({
-  user: undefined,
+  payload: undefined
 });
 
 export default function UserMetadataProvider({
   children,
-  user,
+  payload
 }: UserMetadataProviderType) {
   return (
     <>
-      <UserMetadataProviderContext.Provider value={{ user }}>
+      <UserMetadataProviderContext.Provider value={{ payload }}>
         {children}
       </UserMetadataProviderContext.Provider>
     </>
   );
 }
 
-export const useUserMetadata = () =>
-  useContext(UserMetadataProviderContext).user;
+export const useAuthPayload = () => useContext(UserMetadataProviderContext).payload;

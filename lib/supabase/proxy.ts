@@ -44,15 +44,17 @@ export async function updateSession(request: NextRequest) {
 
   const user = data?.claims;
 
-  const protectedPath = ["/users"];
+  const protectedPath = ["/users", "/events/show", "/events/new"];
   const authPath = ["/login", "/signup"];
-
   const url = request.nextUrl.clone();
-  if (!user && protectedPath.includes(request.nextUrl.pathname)) {
+  const pathName = getPathnameWithoutSlug(request.nextUrl.pathname);
+
+  console.log(pathName);
+  if (!user && protectedPath.includes(pathName)) {
     // no user, potentially respond by redirecting the user to the login page
     url.pathname = "/";
     return NextResponse.redirect(url);
-  } else if (user && authPath.includes(request.nextUrl.pathname)) {
+  } else if (user && authPath.includes(pathName)) {
     url.pathname = "/events";
     return NextResponse.redirect(url);
   } else if (request.nextUrl.pathname === "/") {
@@ -74,4 +76,9 @@ export async function updateSession(request: NextRequest) {
   // of sync and terminate the user's session prematurely!
 
   return supabaseResponse;
+}
+
+function getPathnameWithoutSlug(pathName : string){
+  const uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
+  return pathName.replace(uuidPattern, '').replace(/\/+/g, '/')
 }

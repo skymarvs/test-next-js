@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
+import { useAuthPayload } from "@/contexts/auth-provider";
 
 const eventSchema = z.object({
   image: z
@@ -31,6 +33,12 @@ type EventFormValues = z.infer<typeof eventSchema>;
 type FieldErrors = Partial<Record<keyof EventFormValues, string>>;
 
 export default function CreateNewEventPage() {
+  const auth = useAuthPayload();
+  const router = useRouter();
+  if(!auth?.sub){
+    router.back();
+  }
+
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -216,3 +224,4 @@ export default function CreateNewEventPage() {
     </form>
   );
 }
+

@@ -1,7 +1,7 @@
 "use client";
 
 import { DataTable } from "@/components/custom/data-table/data-table";
-import { useUserMetadata } from "@/contexts/role-provider";
+import { useAuthPayload } from "@/contexts/auth-provider";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { columns } from "@/app/events/[auth_uuid]/_components/columns";
@@ -25,15 +25,15 @@ async function getData(): Promise<Event[] | null> {
 
 export default function ManageEventPage() {
   const slug = useParams<ManageEventSlug>().auth_uuid;
-  const userMetadata = useUserMetadata();
+  const auth = useAuthPayload();
   const router = useRouter();
   const [events, setEvents] = useState<Event[] | null>([]);
 
   useEffect(() => {
-    if (userMetadata?.sub !== slug) {
+    if (auth?.sub !== slug) {
       router.back();
     }
-  }, [slug, router, userMetadata]);
+  }, [slug, router, auth]);
 
   useEffect(() => {
     getData()
