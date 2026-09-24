@@ -33,8 +33,8 @@ export default function ManageEventPage() {
         columns={columns}
         data={profiles ?? []}
         searchFilter={{
-          column_name: "full_name",
-          placeholder: "Search by name",
+          column_name: "email",
+          placeholder: "Search by email",
         }}
       />
     </>

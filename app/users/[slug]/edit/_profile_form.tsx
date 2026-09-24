@@ -51,7 +51,7 @@ export default function UpdateProfileForm() {
                                 <Input
                                 {...field}
                                 id="firstName"
-                                placeholder="Jane"
+                                placeholder="Enter your first name"
                                 aria-invalid={fieldState.invalid}
                                 />
                                 {fieldState.invalid && (
@@ -70,7 +70,7 @@ export default function UpdateProfileForm() {
                                 <Input
                                 {...field}
                                 id="lastName"
-                                placeholder="Doe"
+                                placeholder="Enter your last name"
                                 aria-invalid={fieldState.invalid}
                                 />
                                 {fieldState.invalid && (

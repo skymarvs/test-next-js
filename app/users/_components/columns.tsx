@@ -10,9 +10,14 @@ import { Profile } from "@/lib/types/models";
 const columnHelper = createColumnHelper<DataTableFeatures, Profile>();
 
 export const columns = columnHelper.columns([
-  columnHelper.accessor("full_name", {
+  columnHelper.accessor("first_name", {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={"Name"} />
+      <DataTableColumnHeader column={column} title={"First Name"} />
+    ),
+  }),
+  columnHelper.accessor("last_name", {
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title={"Last Name"} />
     ),
   }),
   columnHelper.accessor("email", {
