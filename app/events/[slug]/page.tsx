@@ -4,14 +4,14 @@ import { DataTable } from "@/components/custom/data-table/data-table";
 import { useAuthPayload } from "@/contexts/auth-provider";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { columns } from "@/app/events/[auth_uuid]/_components/columns";
+import { columns } from "@/app/events/[slug]/_components/columns";
 import createClient from "@/lib/supabase/client";
 import { Event } from "@/lib/types/models";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 
 type ManageEventSlug = {
-  auth_uuid: string;
+  slug: string;
 };
 
 async function getData(): Promise<Event[] | null> {
@@ -24,7 +24,7 @@ async function getData(): Promise<Event[] | null> {
 }
 
 export default function ManageEventPage() {
-  const slug = useParams<ManageEventSlug>().auth_uuid;
+  const slug = useParams<ManageEventSlug>().slug;
   const auth = useAuthPayload();
   const router = useRouter();
   const [events, setEvents] = useState<Event[] | null>([]);

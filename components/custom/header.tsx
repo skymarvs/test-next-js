@@ -2,7 +2,7 @@
 
 import { UserMetadata } from "@supabase/supabase-js";
 import { cn } from "cn";
-import { Menu, MoveRight, SquareArrowRightExit, Ticket } from "lucide-react";
+import { Menu, MoveRight, SquareArrowRightExit, Ticket, UserRoundPen } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import signoutUser from "@/app/actions/auth";
@@ -29,6 +29,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuthPayload } from "@/contexts/auth-provider";
 
 interface HeaderPageProps {
   user: UserMetadata | undefined;
@@ -36,6 +37,7 @@ interface HeaderPageProps {
 
 export default function HeaderPage({ user }: HeaderPageProps) {
   const router = useRouter();
+  const auth = useAuthPayload();
 
   const getInitials = (name: string) => {
     const words = name?.trim().split(/\s+/) || [];
@@ -43,6 +45,10 @@ export default function HeaderPage({ user }: HeaderPageProps) {
       ? (words[0][0] + words[words.length - 1][0]).toUpperCase()
       : "";
   };
+
+  const handleEditProfileBtnClick = () => {
+    router.push(`/users/${auth?.sub}/edit`);
+  }
 
   const handleSignOutBtnClick = () => {
     toast.promise(signoutUser(), {
@@ -116,12 +122,20 @@ export default function HeaderPage({ user }: HeaderPageProps) {
                       </div>
                     </div>
                   }
-                >
-                  Open
-                </DropdownMenuTrigger>
+                />
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
                     <DropdownMenuLabel>Action</DropdownMenuLabel>
+                    <DropdownMenuItem>
+                      <Button
+                        variant="ghost"
+                        onClick={handleEditProfileBtnClick}
+                        className="justify-between w-full"
+                      >
+                        Profile
+                        <UserRoundPen />
+                      </Button>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Button
                         variant="ghost"
@@ -202,11 +216,18 @@ export default function HeaderPage({ user }: HeaderPageProps) {
                       </div>
                       <Separator />
                       <SheetClose
+                        nativeButton={false}
                         render={
-                          <Button onClick={handleSignOutBtnClick}>
-                            Sign-out
-                            <SquareArrowRightExit />
-                          </Button>
+                          <div className="grid">
+                            <Button variant="ghost" onClick={handleEditProfileBtnClick} className="justify-between">
+                              Profile
+                              <UserRoundPen />
+                            </Button>
+                            <Button variant="ghost" onClick={handleSignOutBtnClick} className="justify-between">
+                              Sign-out
+                              <SquareArrowRightExit />
+                            </Button>
+                          </div>
                         }
                       ></SheetClose>
                     </>
