@@ -5,47 +5,32 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useAuthPayload } from "@/contexts/auth-provider";
 
-import { EventCard, EventDataProps } from "./_components/event-card";
+import { EventCard } from "./_components/event-card";
+import createClient from "@/lib/supabase/client";
+import { Event } from "@/lib/types/models";
+import { useEffect, useState } from "react";
 
-const getData = (): EventDataProps[] => {
-  return [
-    {
-      id: 1,
-      title: "Design systems meetup",
-      description: "test description",
-      availableSeats: 1,
-    },
-    {
-      id: 2,
-      title: "Design systems meetup",
-      description: "test description",
-      availableSeats: 1,
-    },
-    {
-      id: 3,
-      title: "Test Title asfdafsf asfdfaf fadsf afdfafads",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Mosley, the librarian at St Bride Printing Library in London, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software like Aldus PageMaker and Microsoft Word including versions of Lorem Ipsum.",
-      availableSeats: 1,
-    },
-    {
-      id: 4,
-      title: "Design systems meetup",
-      description: "test description",
-      availableSeats: 1,
-    },
-    {
-      id: 5,
-      title: "Design systems meetup",
-      description: "test description",
-      availableSeats: 1,
-    },
-  ];
+const getEvents = async (): Promise<Event[]> => {
+  const supabase = createClient();
+  const { data, error } = await supabase.from("events").select("*");
+  if(error){
+    throw new Error(error.message);
+  }
+  return data;
 };
 
 export default function EventsPage() {
+  const [events, setEvents] = useState<Event[]>([]);
   const auth = useAuthPayload();
-  const events = getData();
+
+  useEffect(() => {
+    const _getEvents = async () => {
+      setEvents(await getEvents());
+    }
+
+    _getEvents();
+  }, [events])
+
   const router = useRouter();
   return (
     <>
@@ -60,14 +45,9 @@ export default function EventsPage() {
           </Button>
         )}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 sm:gap-4 md:gap-8 lg:gap-12">
-        {events.map((item: EventDataProps) => (
-          <EventCard
-            key={item.id}
-            title={item.title}
-            description={item.description}
-            availableSeats={0}
-          />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-12">
+        {events.map((item: Event) => (
+          <EventCard key={item.id} {...item}/>
         ))}
       </div>
     </>

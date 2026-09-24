@@ -8,26 +8,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import createClient from "@/lib/supabase/client";
+import { Event } from "@/lib/types/models";
+import { cn } from "cn";
 
-export type EventDataProps = {
-  id?: number;
-  title: string;
-  description: string;
-  availableSeats: number;
-};
-
-export function EventCard(props: EventDataProps) {
+export function EventCard(props: Event) {
+  const supabase = createClient();
+  let imagePath = null;
+  if(props.image_link){
+    imagePath = supabase.storage.from('event-cover').getPublicUrl(props.image_link);
+  }
   return (
     <Card className="relative mx-auto w-full max-w-sm pt-0">
-      <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
+      <div className={cn(
+        "absolute inset-0 z-30 aspect-video",
+        !imagePath && "bg-black/35"
+        )} />
       <img
-        src="https://avatar.vercel.sh/shadcn1"
+        src={imagePath?.data.publicUrl ?? "https://avatar.vercel.sh/shadcn1"}
         alt="Event cover"
-        className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
+        className={cn(
+          "relative z-20 aspect-video w-full object-cover",
+          !imagePath && "brightness-60 grayscale dark:brightness-40"
+        )}
       />
       <CardHeader className="min-h-20 max-h-20 content-start">
         <CardAction>
-          <Badge variant="secondary">Available</Badge>
+          <Badge variant="secondary">Slot left: {props.max_slot}</Badge>
         </CardAction>
         <CardTitle className="line-clamp-1">{props.title}</CardTitle>
         <CardDescription className="line-clamp-3 col-span-2 text-justify">
