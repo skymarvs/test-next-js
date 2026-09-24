@@ -4,6 +4,7 @@ import { useAuthPayload } from "@/contexts/auth-provider";
 import { useParams, useRouter } from "next/navigation";
 import UpdateProfileForm from "./_profile_form";
 import UpdatePasswordForm from "./_password_form";
+import { useEffect } from "react";
 
 type EditProfileSlug = {
   slug: string;
@@ -14,9 +15,11 @@ export default function EditProfilePage() {
   const auth = useAuthPayload();
   const router = useRouter();
 
-  if(auth?.sub !== slug){
-    router.back();
-  }
+  useEffect(() => {
+    if(auth?.sub !== slug){
+      router.back();
+    }
+  }, [auth, router, slug])
 
   return (<>
     <h1 className="mb-4">Edit Profile</h1>

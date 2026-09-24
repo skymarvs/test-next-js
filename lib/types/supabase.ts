@@ -21,6 +21,7 @@ export type Database = {
           description: string | null
           id: number
           image_link: string | null
+          max_slot: number | null
           title: string
           updated_at: string | null
         }
@@ -30,6 +31,7 @@ export type Database = {
           description?: string | null
           id?: number
           image_link?: string | null
+          max_slot?: number | null
           title: string
           updated_at?: string | null
         }
@@ -39,6 +41,7 @@ export type Database = {
           description?: string | null
           id?: number
           image_link?: string | null
+          max_slot?: number | null
           title?: string
           updated_at?: string | null
         }

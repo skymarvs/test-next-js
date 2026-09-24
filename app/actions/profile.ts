@@ -30,8 +30,6 @@ export async function updateProfile (formData : ProfileEditSchemaType) {
     throw new Error("Not authenticated");
   }
 
-  console.log("test123");
-  console.log(email);
   const profile = await supabase.from("profile")
     .update({ first_name: firstName, last_name: lastName, email: email })
     .eq('auth_id', jwtToken.data.claims.sub);

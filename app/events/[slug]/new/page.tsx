@@ -5,53 +5,48 @@ import {
   useRef,
   type ChangeEvent,
   type DragEvent as ReactDragEvent,
-  type FormEvent,
+  useEffect,
 } from "react";
 import { ImagePlus, X } from "lucide-react";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import { useAuthPayload } from "@/contexts/auth-provider";
-
-const eventSchema = z.object({
-  image: z
-    .instanceof(File, { message: "Please upload an image" })
-    .refine((file) => file.type.startsWith("image/"), "File must be an image"),
-  title: z.string().trim().min(1, "Title is required"),
-  description: z.string().trim().min(1, "Description is required"),
-  slots: z
-    .number({ message: "Available slots is required" })
-    .int("Available slots must be a whole number")
-    .positive("Available slots must be at least 1"),
-});
-
-type EventFormValues = z.infer<typeof eventSchema>;
-type FieldErrors = Partial<Record<keyof EventFormValues, string>>;
+import { CreateEventSchema, CreateEventSchemaType } from "@/lib/schema";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { toast } from "@/components/ui/toast";
+import { createEvent } from "@/app/actions/events";
 
 export default function CreateNewEventPage() {
   const auth = useAuthPayload();
   const router = useRouter();
-  if(!auth?.sub){
-    router.back();
-  }
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  useEffect(() => {
+    if(!auth?.sub){
+      router.back();
+    }
+  }, [auth, router])
+
   const [preview, setPreview] = useState<string | null>(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [slots, setSlots] = useState<number | "">("");
-  const [errors, setErrors] = useState<FieldErrors>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const createEventForm = useForm<CreateEventSchemaType>({
+    resolver: zodResolver(CreateEventSchema),
+    defaultValues: {
+      image: undefined,
+      title: "",
+      description: "",
+    }
+  })
+
   function handleFile(file: File | undefined) {
-    if (!file || !file.type.startsWith("image/")) return;
-    setImageFile(file);
+    if (!file) return;
+    createEventForm.setValue("image", file, { shouldValidate: true})
     setPreview(URL.createObjectURL(file));
-    setErrors((prev) => ({ ...prev, image: undefined }));
   }
 
   function onDrop(e: ReactDragEvent<HTMLDivElement>) {
@@ -64,38 +59,32 @@ export default function CreateNewEventPage() {
   }
 
   function clearImage() {
-    setImageFile(null);
+    createEventForm.resetField("image")
     setPreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
+  function onCreateEventSubmit(data : CreateEventSchemaType) {
+    const formData = new FormData();
+    formData.append("image", data.image)
+    formData.append("title", data.title)
+    formData.append("description", data.description)
+    formData.append("slots", String(data.slots))
 
-    const result = eventSchema.safeParse({
-      image: imageFile,
-      title,
-      description,
-      slots: slots === "" ? undefined : slots,
+    toast.promise(createEvent(formData), {
+      loading: "Creating Event...",
+      success: () => {
+        router.back();
+        return "Event created.";
+      },
+      error: (err) => `Failed: ${err.message}`,
     });
-
-    if (!result.success) {
-      const fieldErrors: FieldErrors = {};
-      for (const issue of result.error.issues) {
-        const key = issue.path[0] as keyof EventFormValues;
-        if (!fieldErrors[key]) fieldErrors[key] = issue.message;
-      }
-      setErrors(fieldErrors);
-      return;
-    }
-
-    setErrors({});
-    // result.data is a fully validated EventFormValues — send it to your API here.
-    console.log(result.data);
   }
 
+  const imageError = createEventForm.formState.errors.image;
+
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={createEventForm.handleSubmit(onCreateEventSubmit)} noValidate>
       <h1 className="mb-4">New Event Page</h1>
       <div className="grid lg:flex min-h-[75vh] gap-12">
         {/* Left: image upload */}
@@ -105,7 +94,7 @@ export default function CreateNewEventPage() {
             onDragOver={(e) => e.preventDefault()}
             onClick={() => fileInputRef.current?.click()}
             className={`relative flex h-full min-h-80 w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed bg-muted/30 p-6 text-center transition-colors hover:border-muted-foreground/40 hover:bg-muted/50 ${
-              errors.image ? "border-destructive" : "border-muted-foreground/25"
+              imageError ? "border-destructive" : "border-muted-foreground/25"
             }`}
           >
             {preview ? (
@@ -119,13 +108,13 @@ export default function CreateNewEventPage() {
                   type="button"
                   variant="secondary"
                   size="icon"
-                  className="absolute right-3 top-3"
+                  className="absolute right-3 top-3 border border-destructive/25"
                   onClick={(e) => {
                     e.stopPropagation();
                     clearImage();
                   }}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-4 w-4 text-destructive" />
                 </Button>
               </>
             ) : (
@@ -142,7 +131,7 @@ export default function CreateNewEventPage() {
                 </p>
               </>
             )}
-            <input
+            <Input
               ref={fileInputRef}
               type="file"
               accept="image/*"
@@ -150,68 +139,75 @@ export default function CreateNewEventPage() {
               className="hidden"
             />
           </div>
-          {errors.image && (
-            <p className="mt-2 text-sm text-destructive">{errors.image}</p>
+          {imageError && (
+            <p className="mt-2 text-sm text-destructive">{imageError.message}</p>
           )}
         </div>
 
         {/* Right: event details */}
         <div className="flex w-full flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              placeholder="Give your event a name"
-              value={title}
-              onChange={(e) => {
-                setTitle(e.target.value);
-                setErrors((prev) => ({ ...prev, title: undefined }));
-              }}
-              aria-invalid={!!errors.title}
-            />
-            {errors.title && (
-              <p className="text-sm text-destructive">{errors.title}</p>
-            )}
-          </div>
+          <Controller
+            name="title"
+            control={createEventForm.control}
+            render={({field, fieldState}) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="title">Title</FieldLabel>
+                <Input
+                  {...field}
+                  id="title"
+                  placeholder="Give your event a name"
+                  aria-invalid={fieldState.invalid}
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]}/>
+                )}
+              </Field>
+            )}/>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              placeholder="What's this event about?"
-              className="min-h-40 resize-none"
-              value={description}
-              onChange={(e) => {
-                setDescription(e.target.value);
-                setErrors((prev) => ({ ...prev, description: undefined }));
-              }}
-              aria-invalid={!!errors.description}
-            />
-            {errors.description && (
-              <p className="text-sm text-destructive">{errors.description}</p>
-            )}
-          </div>
+          <Controller
+            name="description"
+            control={createEventForm.control}
+            render={({field, fieldState}) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="description">Description</FieldLabel>
+                <Textarea
+                  {...field}
+                  id="description"
+                  placeholder="What's this event about?"
+                  className="min-h-40 resize-none"
+                  aria-invalid={fieldState.invalid}
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]}/>
+                )}
+              </Field>
+            )}/>
 
           <div className="flex items-end justify-between gap-2">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="slots">Available slots</Label>
-              <Input
-                id="slots"
-                type="number"
-                min={1}
-                placeholder="e.g. 20"
-                value={slots}
-                onChange={(e) => {
-                  setSlots(e.target.value === "" ? "" : Number(e.target.value));
-                  setErrors((prev) => ({ ...prev, slots: undefined }));
-                }}
-                className="max-w-40"
-                aria-invalid={!!errors.slots}
-              />
-              {errors.slots && (
-                <p className="text-sm text-destructive">{errors.slots}</p>
-              )}
-            </div>
+            <Controller
+              name="slots"
+              control={createEventForm.control}
+              render={({field, fieldState}) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="slots">Available slots</FieldLabel>
+                  <Input
+                    {...field}
+                    id="slots"
+                    type="number"
+                    placeholder="e.g. 20"
+                    className="max-w-40"
+                    aria-invalid={fieldState.invalid}
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const v = e.target.valueAsNumber;
+                      field.onChange(Number.isNaN(v) ? undefined : v);
+                    }}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]}/>
+                  )}
+                </Field>
+              )}/>
             <div className="flex gap-2">
               <Button type="button" variant="outline">
                 Cancel

@@ -24,6 +24,13 @@ export const columns = columnHelper.columns([
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title={"Description"} />
     ),
+    cell: ({ getValue })  => {
+      return (
+        <div className="line-clamp-4 whitespace-normal">
+          {getValue()}
+        </div>
+      );
+    }
   }),
   columnHelper.accessor("created_at", {
     header: ({ column }) => (
