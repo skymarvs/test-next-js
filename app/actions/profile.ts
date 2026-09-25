@@ -1,9 +1,9 @@
 "use server";
 
 import { PasswordEditSchema, PasswordEditSchemaType, ProfileEditSchema, ProfileEditSchemaType } from "@/lib/schema";
-import createClient from "@/lib/supabase/server";
 import { Profile } from "@/lib/types/models";
 import signoutUser, { loginUser } from "@/app/actions/auth";
+import { createClient } from "@/lib/supabase/server";
 
 export async function getProfile(): Promise<Profile[] | null> {
   const supabase = await createClient();

@@ -1,7 +1,7 @@
 "use server"
 
 import { CreateEventSchema } from "@/lib/schema"
-import createClient from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function createEvent(formData : FormData){
     const parsedData = CreateEventSchema.safeParse({
@@ -41,10 +41,29 @@ export async function createEvent(formData : FormData){
         image_link: path,
         title: title,
         description: description,
-        max_slot: slots
+        max_slot: slots,
+        available_slot: slots
     }])
 
     if(error) {
         throw new Error(error.message);
     }
+}
+
+export async function subscribeToEvent(eventId: number){
+    const supabase = await createClient();
+    const jwtToken = await supabase.auth.getClaims();
+    if(jwtToken.error || !jwtToken.data) {
+        throw new Error("Not authenticated");
+    }
+
+    const { data, error } = await supabase.rpc("subscribe_to_events", {
+        param_id: eventId
+    });
+
+    if(error) {
+        throw new Error(error.message);
+    }
+
+    return data;
 }

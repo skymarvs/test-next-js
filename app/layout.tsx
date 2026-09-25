@@ -4,10 +4,10 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ReactNodeType } from "@/lib/schema";
 import HeaderPage from "@/components/custom/header";
-import createClient from "@/lib/supabase/server";
 import { Toaster } from "@/components/ui/toast";
 import UserMetadataProvider from "@/contexts/auth-provider";
 import { ViewTransition } from "react";
+import { createClient } from "@/lib/supabase/server";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 

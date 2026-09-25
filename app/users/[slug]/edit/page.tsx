@@ -23,9 +23,11 @@ export default function EditProfilePage() {
 
   return (<>
     <h1 className="mb-4">Edit Profile</h1>
-    <div className="grid lg:flex gap-4 w-full">
+    <div className="grid lg:flex gap-4 w-full justify-center">
       <UpdateProfileForm />
-      <UpdatePasswordForm />
+      {auth?.app_metadata?.provider === 'email' && (
+        <UpdatePasswordForm />
+      )}
     </div>  
   </>);
 }

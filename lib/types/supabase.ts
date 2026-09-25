@@ -16,32 +16,35 @@ export type Database = {
     Tables: {
       events: {
         Row: {
+          available_slot: number
           created_at: string
           created_by: string | null
           description: string | null
           id: number
           image_link: string | null
-          max_slot: number | null
+          max_slot: number
           title: string
           updated_at: string | null
         }
         Insert: {
+          available_slot: number
           created_at?: string
           created_by?: string | null
           description?: string | null
           id?: number
           image_link?: string | null
-          max_slot?: number | null
+          max_slot: number
           title: string
           updated_at?: string | null
         }
         Update: {
+          available_slot?: number
           created_at?: string
           created_by?: string | null
           description?: string | null
           id?: number
           image_link?: string | null
-          max_slot?: number | null
+          max_slot?: number
           title?: string
           updated_at?: string | null
         }
@@ -83,6 +86,35 @@ export type Database = {
         }
         Relationships: []
       }
+      subscribed_events: {
+        Row: {
+          created_at: string
+          event_id: number
+          id: number
+          user: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: number
+          id?: number
+          user?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: number
+          id?: number
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscribed_events_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -90,6 +122,21 @@ export type Database = {
     Functions: {
       handle_auth_login: { Args: { event: Json }; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
+      subscribe_to_events: {
+        Args: { param_id: number }
+        Returns: {
+          created_at: string
+          event_id: number
+          id: number
+          user: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "subscribed_events"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       roles: "ADMIN" | "USER"
