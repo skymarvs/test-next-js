@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CheckCircle2, MoveLeft } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -29,23 +29,23 @@ export default function EventSubscribePage() {
   const [event, setEvent] = useState<Event>();
   const router = useRouter();
 
+  const fetchEvent = useCallback(() => {
+    if(Number.isNaN(Number(slug))){
+      return router.back();
+    }
+  }, [router, slug])
+
+
   const subscribeToShow = (id : number) => {
     toast.promise(subscribeToEvent(id), {
       loading: "Subscribing...",
       success: () => {
-        router.refresh();
-        setSubscribed(true);
+        fetchEvent();
         return "Event Subscribed";
       },
       error: (err) => `Failed: ${err.message}`,
     });
   }
-
-  useEffect(() => {
-    if(Number.isNaN(slug)){
-      return router.back();
-    }
-  }, [router, slug])
 
   useEffect(() => {
     const _getEvent = async () => {
@@ -97,7 +97,7 @@ export default function EventSubscribePage() {
               <span className="text-sm font-medium text-muted-foreground">
                 Available slots
               </span>
-              <Badge variant="secondary">{event?.max_slot} open</Badge>
+              <Badge variant="secondary">{event?.available_slot}/{event?.max_slot} open</Badge>
             </div>
             <div className="flex gap-2">
               {auth?.role === 'authenticated'

@@ -9,6 +9,7 @@ import createClient from "@/lib/supabase/client";
 import { Event } from "@/lib/types/models";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ManageEventSlug = {
   slug: string;
@@ -52,16 +53,27 @@ export default function ManageEventPage() {
   return (
     <>
       <h1 className="mb-4">Events Page</h1>
-      <DataTable
-        columns={columns}
-        data={events ?? []}
-        searchFilter={{ column_name: "title", placeholder: "Search by title" }}
-        actionButton={
-          <Button onClick={() => router.push(`/events/${slug}/new`)}>
-            Create Event
-          </Button>
-        }
-      />
+      <Tabs>
+        <TabsList>
+          <TabsTrigger value="own">Own Events</TabsTrigger>
+          <TabsTrigger value="subscribed">Subscribed Events</TabsTrigger>
+        </TabsList>
+        <TabsContent value="subscribed">
+
+        </TabsContent>
+        <TabsContent value="own">
+          <DataTable
+            columns={columns}
+            data={events ?? []}
+            searchFilter={{ column_name: "title", placeholder: "Search by title" }}
+            actionButton={
+              <Button onClick={() => router.push(`/events/${slug}/new`)}>
+                Create Event
+              </Button>
+            }
+          />
+        </TabsContent>
+      </Tabs>
     </>
   );
 }

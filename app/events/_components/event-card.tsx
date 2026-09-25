@@ -34,7 +34,7 @@ export function EventCard(props: Event) {
       />
       <CardHeader className="min-h-20 max-h-20 content-start">
         <CardAction>
-          <Badge variant="secondary">Slot left: {props.max_slot}</Badge>
+          <Badge variant="secondary">Slot left: {props.available_slot}/{props.max_slot}</Badge>
         </CardAction>
         <CardTitle className="line-clamp-1">{props.title}</CardTitle>
         <CardDescription className="line-clamp-3 col-span-2 text-justify">

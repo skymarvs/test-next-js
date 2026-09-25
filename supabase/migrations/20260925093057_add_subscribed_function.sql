@@ -3,7 +3,7 @@ set check_function_bodies = off;
 CREATE OR REPLACE FUNCTION public.subscribe_to_events(param_id bigint)
  RETURNS public.subscribed_events
  LANGUAGE plpgsql
- SECURITY DEFINER
+ SECURITY INVOKER
  SET search_path TO 'public'
 AS $function$
 declare
@@ -13,7 +13,7 @@ begin
     raise exception 'Not Authenticated';
   end if;
 
-  update public.events set available_slot = available_slot - 1 where id = param_id and available_slot > 0;
+  update public.events set available_slot = available_slot - 1 where id = param_id and available_slot > 0 and created_by <> auth.uid();
 
   if not found then
     raise exception 'No available slots for event %', param_id;
