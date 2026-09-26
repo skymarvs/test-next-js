@@ -15,9 +15,9 @@ type ManageEventSlug = {
   slug: string;
 };
 
-async function getData(): Promise<Event[] | null> {
+async function getData(id: string): Promise<Event[] | null> {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("events").select("*");
+  const { data, error } = await supabase.from("events").select("*").eq("created_by", id);
   if (error) {
     throw new Error("fdsaf");
   }
@@ -37,7 +37,7 @@ export default function ManageEventPage() {
   }, [slug, router, auth]);
 
   useEffect(() => {
-    getData()
+    getData(slug)
       .then((data) => setEvents(data))
       .catch((error) => {
         if (error instanceof Error) {
@@ -48,7 +48,7 @@ export default function ManageEventPage() {
           });
         }
       });
-  }, []);
+  }, [slug]);
 
   return (
     <>
