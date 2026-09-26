@@ -1,3 +1,4 @@
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { Database } from "@/lib/types/supabase";
@@ -6,8 +7,14 @@ export async function createClient() {
   return _createClient(process.env.NEXT_PUBLIC_SUPABASE_CLIENT_KEY!)
 }
 
-export async function createAdminClient() {
-  return _createClient(process.env.SUPABASE_SERVICE_KEY!)
+// Not cookie/session-bound, unlike `createClient()` above — always
+// authenticates as the service role, bypassing RLS.
+export function createAdminClient() {
+  return createSupabaseClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
 }
 
 async function _createClient(key : string){

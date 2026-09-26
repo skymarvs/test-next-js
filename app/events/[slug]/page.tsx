@@ -5,6 +5,8 @@ import { useAuthPayload } from "@/contexts/auth-provider";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { columns } from "@/app/events/[slug]/_components/columns";
+import { subscribedColumns } from "@/app/events/[slug]/_components/subscribed-columns";
+import { getMySubscribedEvents } from "@/app/actions/events";
 import createClient from "@/lib/supabase/client";
 import { Event } from "@/lib/types/models";
 import { toast } from "@/components/ui/toast";
@@ -15,9 +17,9 @@ type ManageEventSlug = {
   slug: string;
 };
 
-async function getData(): Promise<Event[] | null> {
+async function getData(uuid : string): Promise<Event[] | null> {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("events").select("*");
+  const { data, error } = await supabase.from("events").select("*").eq("created_by", uuid);
   if (error) {
     throw new Error("fdsaf");
   }
@@ -29,6 +31,7 @@ export default function ManageEventPage() {
   const auth = useAuthPayload();
   const router = useRouter();
   const [events, setEvents] = useState<Event[] | null>([]);
+  const [subscribedEvents, setSubscribedEvents] = useState<Event[]>([]);
 
   useEffect(() => {
     if (auth?.sub !== slug) {
@@ -37,7 +40,7 @@ export default function ManageEventPage() {
   }, [slug, router, auth]);
 
   useEffect(() => {
-    getData()
+    getData(slug)
       .then((data) => setEvents(data))
       .catch((error) => {
         if (error instanceof Error) {
@@ -48,7 +51,22 @@ export default function ManageEventPage() {
           });
         }
       });
-  }, []);
+  }, [slug]);
+
+  useEffect(() => {
+    if (!auth?.sub) return;
+    getMySubscribedEvents()
+      .then((data) => setSubscribedEvents(data))
+      .catch((error) => {
+        if (error instanceof Error) {
+          toast.add({
+            title: "Failed to fetch subscribed events.",
+            description: error.message,
+            type: "error",
+          });
+        }
+      });
+  }, [auth?.sub]);
 
   return (
     <>
@@ -59,7 +77,11 @@ export default function ManageEventPage() {
           <TabsTrigger value="subscribed">Subscribed Events</TabsTrigger>
         </TabsList>
         <TabsContent value="subscribed">
-
+          <DataTable
+            columns={subscribedColumns}
+            data={subscribedEvents}
+            searchFilter={{ column_name: "title", placeholder: "Search by title" }}
+          />
         </TabsContent>
         <TabsContent value="own">
           <DataTable

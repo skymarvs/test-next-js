@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle2, MoveLeft } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import createClient from "@/lib/supabase/client";
 import { Event } from "@/lib/types/models";
 import { useParams, useRouter } from "next/navigation";
 import { useAuthPayload } from "@/contexts/auth-provider";
-import { subscribeToEvent } from "@/app/actions/events";
+import { getMySubscriptionStatus, subscribeToEvent } from "@/app/actions/events";
 import { toast } from "@/components/ui/toast";
 
 const getEvent = async (id : number): Promise<Event> => {
@@ -24,39 +24,41 @@ const getEvent = async (id : number): Promise<Event> => {
 
 export default function EventSubscribePage() {
   const auth = useAuthPayload();
-  const slug = useParams<{event_id : string}>().event_id;
+  const eventId = useParams<{event_id : string}>().event_id;
   const [subscribed, setSubscribed] = useState(false);
   const [event, setEvent] = useState<Event>();
   const router = useRouter();
 
-  const fetchEvent = useCallback(() => {
-    if(Number.isNaN(Number(slug))){
-      return router.back();
-    }
-  }, [router, slug])
-
-
   const subscribeToShow = (id : number) => {
-    toast.promise(subscribeToEvent(id), {
+    const promise = subscribeToEvent(id).then(async (result) => {
+      setEvent(await getEvent(id));
+      setSubscribed(true);
+      return result;
+    });
+
+    toast.promise(promise, {
       loading: "Subscribing...",
-      success: () => {
-        fetchEvent();
-        return "Event Subscribed";
-      },
+      success: "Event Subscribed",
       error: (err) => `Failed: ${err.message}`,
     });
   }
 
   useEffect(() => {
-    const _getEvent = async () => {
-      setEvent(await getEvent(Number(slug)));
+    const load = async () => {
+      const fetchedEvent = await getEvent(Number(eventId));
+      setEvent(fetchedEvent);
+      if(auth?.role === 'authenticated' && auth.sub !== fetchedEvent.created_by){
+        setSubscribed(await getMySubscriptionStatus(fetchedEvent.id));
+      }
     }
-    _getEvent();
-  }, [slug])
+    load();
+  }, [eventId, auth?.sub, auth?.role])
 
   if(!event) {
     return;
   }
+
+  const isOwner = auth?.sub === event.created_by;
 
   return (
     <>
@@ -100,23 +102,24 @@ export default function EventSubscribePage() {
               <Badge variant="secondary">{event?.available_slot}/{event?.max_slot} open</Badge>
             </div>
             <div className="flex gap-2">
-              {auth?.role === 'authenticated'
-                ? (<Button
-                    type="button"
-                    disabled={subscribed}
-                    onClick={() => subscribeToShow(event.id)}
-                  >
-                    {subscribed ? (
-                      <>
-                        <CheckCircle2 className="h-4 w-4" />
-                        Subscribed
-                      </>
-                    ) : (
-                      "Subscribe"
-                    )}
-                  </Button>)
-                :(<Button onClick={() => router.push("/login")}>Sign in to Subscribe</Button>)
-              }
+              {!isOwner && (
+                auth?.role === 'authenticated'
+                  ? (<Button
+                      type="button"
+                      disabled={subscribed}
+                      onClick={() => subscribeToShow(event.id)}
+                    >
+                      {subscribed ? (
+                        <>
+                          <CheckCircle2 className="h-4 w-4" />
+                          Subscribed
+                        </>
+                      ) : (
+                        "Subscribe"
+                      )}
+                    </Button>)
+                  :(<Button onClick={() => router.push("/login")}>Sign in to Subscribe</Button>)
+              )}
             </div>
           </div>
         </div>

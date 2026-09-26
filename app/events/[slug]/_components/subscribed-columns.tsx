@@ -1,7 +1,7 @@
 "use client";
 
 import { createColumnHelper, type Row } from "@tanstack/react-table";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { type DataTableFeatures } from "@/components/custom/data-table/data-table-features";
 import { DataTableColumnHeader } from "@/components/custom/data-table/column-header";
@@ -11,32 +11,22 @@ import { Event } from "@/lib/types/models";
 // Use `accessor` for data columns and `display` for columns without one.
 const columnHelper = createColumnHelper<DataTableFeatures, Event>();
 
-function EventActionsCell({ row }: { row: Row<DataTableFeatures, Event> }) {
+function SubscribedEventActionsCell({ row }: { row: Row<DataTableFeatures, Event> }) {
   const router = useRouter();
-  const { slug } = useParams<{ slug: string }>();
   const event = row.original;
 
   return (
-    <div className="flex gap-2">
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => router.push(`/events/${slug}/show/${event.id}`)}
-      >
-        View
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => router.push(`/events/${slug}/update/${event.id}`)}
-      >
-        Update
-      </Button>
-    </div>
+    <Button
+      size="sm"
+      variant="outline"
+      onClick={() => router.push(`/events/${event.created_by}/show/${event.id}`)}
+    >
+      View
+    </Button>
   );
 }
 
-export const columns = columnHelper.columns([
+export const subscribedColumns = columnHelper.columns([
   columnHelper.accessor("id", {
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title={"ID"} />
@@ -67,6 +57,6 @@ export const columns = columnHelper.columns([
   columnHelper.display({
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => <EventActionsCell row={row} />,
+    cell: ({ row }) => <SubscribedEventActionsCell row={row} />,
   }),
 ]);

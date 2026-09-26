@@ -3,7 +3,7 @@ set check_function_bodies = off;
 CREATE OR REPLACE FUNCTION public.subscribe_to_events(param_id bigint)
  RETURNS public.subscribed_events
  LANGUAGE plpgsql
- SECURITY INVOKER
+ SECURITY DEFINER
  SET search_path TO 'public'
 AS $function$
 declare
