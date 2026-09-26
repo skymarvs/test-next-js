@@ -12,6 +12,7 @@ import { Event } from "@/lib/types/models";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { unwrapActionResult } from "@/lib/utils";
 
 type ManageEventSlug = {
   slug: string;
@@ -21,7 +22,7 @@ async function getData(uuid : string): Promise<Event[] | null> {
   const supabase = await createClient();
   const { data, error } = await supabase.from("events").select("*").eq("created_by", uuid);
   if (error) {
-    throw new Error("fdsaf");
+    throw new Error(error.message);
   }
   return data;
 }
@@ -56,6 +57,7 @@ export default function ManageEventPage() {
   useEffect(() => {
     if (!auth?.sub) return;
     getMySubscribedEvents()
+      .then(unwrapActionResult)
       .then((data) => setSubscribedEvents(data))
       .catch((error) => {
         if (error instanceof Error) {

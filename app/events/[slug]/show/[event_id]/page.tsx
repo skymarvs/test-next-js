@@ -11,6 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuthPayload } from "@/contexts/auth-provider";
 import { getMySubscriptionStatus, subscribeToEvent } from "@/app/actions/events";
 import { toast } from "@/components/ui/toast";
+import { unwrapActionResult } from "@/lib/utils";
 
 const getEvent = async (id : number): Promise<Event> => {
   const supabase = createClient();
@@ -30,10 +31,9 @@ export default function EventSubscribePage() {
   const router = useRouter();
 
   const subscribeToShow = (id : number) => {
-    const promise = subscribeToEvent(id).then(async (result) => {
+    const promise = subscribeToEvent(id).then(unwrapActionResult).then(async () => {
       setEvent(await getEvent(id));
       setSubscribed(true);
-      return result;
     });
 
     toast.promise(promise, {
@@ -48,7 +48,7 @@ export default function EventSubscribePage() {
       const fetchedEvent = await getEvent(Number(eventId));
       setEvent(fetchedEvent);
       if(auth?.role === 'authenticated' && auth.sub !== fetchedEvent.created_by){
-        setSubscribed(await getMySubscriptionStatus(fetchedEvent.id));
+        setSubscribed(unwrapActionResult(await getMySubscriptionStatus(fetchedEvent.id)));
       }
     }
     load();

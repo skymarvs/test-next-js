@@ -5,6 +5,7 @@ import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "@/compo
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { PasswordEditSchema, PasswordEditSchemaType } from "@/lib/schema/profile-schema";
+import { unwrapActionResult } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
@@ -22,7 +23,7 @@ export default function UpdatePasswordForm(){
   })
 
   const handlePasswordEditBtnClick = (formData : PasswordEditSchemaType) => {
-      toast.promise(updatePassword(formData), {
+      toast.promise(updatePassword(formData).then(unwrapActionResult), {
         loading: "Password updating ...",
         success: () => {
             router.refresh()

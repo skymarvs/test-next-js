@@ -6,6 +6,7 @@ import { DataTable } from "@/components/custom/data-table/data-table";
 import { toast } from "@/components/ui/toast";
 import { Profile } from "@/lib/types/models";
 import { getProfile } from "@/app/actions/profile";
+import { unwrapActionResult } from "@/lib/utils";
 
 import { columns } from "./_components/columns";
 
@@ -14,6 +15,7 @@ export default function ManageEventPage() {
 
   useEffect(() => {
     getProfile()
+      .then(unwrapActionResult)
       .then((data) => setProfiles(data))
       .catch((error) => {
         if (error instanceof Error) {

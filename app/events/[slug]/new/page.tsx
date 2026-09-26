@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { toast } from "@/components/ui/toast";
 import { createEvent } from "@/app/actions/events";
+import { unwrapActionResult } from "@/lib/utils";
 
 export default function CreateNewEventPage() {
   const auth = useAuthPayload();
@@ -71,7 +72,7 @@ export default function CreateNewEventPage() {
     formData.append("description", data.description)
     formData.append("slots", String(data.slots))
 
-    toast.promise(createEvent(formData), {
+    toast.promise(createEvent(formData).then(unwrapActionResult), {
       loading: "Creating Event...",
       success: () => {
         router.back();

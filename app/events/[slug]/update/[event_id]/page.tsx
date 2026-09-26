@@ -22,6 +22,7 @@ import { toast } from "@/components/ui/toast";
 import { updateEvent } from "@/app/actions/events";
 import createClient from "@/lib/supabase/client";
 import { Event } from "@/lib/types/models";
+import { unwrapActionResult } from "@/lib/utils";
 
 const getEvent = async (id: number): Promise<Event> => {
   const supabase = createClient();
@@ -116,7 +117,7 @@ export default function UpdateEventPage() {
     formData.append("description", data.description)
     formData.append("slots", String(data.slots))
 
-    toast.promise(updateEvent(formData), {
+    toast.promise(updateEvent(formData).then(unwrapActionResult), {
       loading: "Updating Event...",
       success: () => {
         router.back();

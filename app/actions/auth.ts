@@ -8,11 +8,12 @@ import {
 } from "@/lib/schema";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { ActionResult } from "@/lib/types/action-result";
 
-export async function signupUser(formData: SignupSchemaType) {
+export async function signupUser(formData: SignupSchemaType): Promise<ActionResult> {
   const parsedData = SignupSchema.safeParse(formData);
   if (!parsedData.success) {
-    throw new Error(parsedData.error.message);
+    return { error: parsedData.error.message };
   }
 
   const { firstName, lastName, email, password } = parsedData.data;
@@ -29,16 +30,17 @@ export async function signupUser(formData: SignupSchemaType) {
   });
 
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   revalidatePath("/", "layout");
+  return { data: undefined };
 }
 
-export async function loginUser(formData: LoginSchemaType) {
+export async function loginUser(formData: LoginSchemaType): Promise<ActionResult> {
   const parsedData = LoginSchema.safeParse(formData);
   if (!parsedData.success) {
-    throw new Error(parsedData.error.message);
+    return { error: parsedData.error.message };
   }
 
   const { email, password } = parsedData.data;
@@ -50,17 +52,19 @@ export async function loginUser(formData: LoginSchemaType) {
   });
 
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   revalidatePath("/", "layout");
+  return { data: undefined };
 }
 
-export default async function signoutUser() {
+export default async function signoutUser(): Promise<ActionResult> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signOut();
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
   revalidatePath("/", "layout");
+  return { data: undefined };
 }

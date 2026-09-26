@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { LoginSchema, LoginSchemaType } from "@/lib/schema";
+import { unwrapActionResult } from "@/lib/utils";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function SignInPage() {
   });
 
   function onSubmit(data: LoginSchemaType) {
-    toast.promise(loginUser(data), {
+    toast.promise(loginUser(data).then(unwrapActionResult), {
       loading: "Signing up...",
       success: () => {
         router.push("/events");

@@ -11,6 +11,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/toast";
 import { Roles } from "@/lib/enums/roles";
+import { unwrapActionResult } from "@/lib/utils";
 import {
   Sheet,
   SheetClose,
@@ -51,7 +52,7 @@ export default function HeaderPage({ user }: HeaderPageProps) {
   }
 
   const handleSignOutBtnClick = () => {
-    toast.promise(signoutUser(), {
+    toast.promise(signoutUser().then(unwrapActionResult), {
       loading: "Logging out.",
       success: () => {
         router.refresh();

@@ -5,6 +5,7 @@ import { Field, FieldContent, FieldGroup, FieldLabel, FieldError } from "@/compo
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { useAuthPayload } from "@/contexts/auth-provider";
+import { unwrapActionResult } from "@/lib/utils";
 import { ProfileEditSchema, ProfileEditSchemaType } from "@/lib/schema/profile-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -23,7 +24,7 @@ export default function UpdateProfileForm() {
     })
 
     const handleProfileEditBtnClick = (formData : ProfileEditSchemaType) => {
-        toast.promise(updateProfile(formData), {
+        toast.promise(updateProfile(formData).then(unwrapActionResult), {
         loading: "Profile updating ...",
         success: () => {
             router.refresh()

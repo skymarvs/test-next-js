@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import { SignupSchema, SignupSchemaType } from "@/lib/schema";
+import { unwrapActionResult } from "@/lib/utils";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function SignUpPage() {
   });
 
   const handleSignUpBtnClick = (formData: SignupSchemaType) => {
-    toast.promise(signupUser(formData), {
+    toast.promise(signupUser(formData).then(unwrapActionResult), {
       loading: "Signing up...",
       success: () => {
         router.push("/events");

@@ -3,21 +3,22 @@
 import { CreateEventSchema, UpdateEventSchema } from "@/lib/schema"
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { Event } from "@/lib/types/models";
+import { ActionResult } from "@/lib/types/action-result";
 
-export async function createEvent(formData : FormData){
+export async function createEvent(formData : FormData): Promise<ActionResult> {
     const parsedData = CreateEventSchema.safeParse({
         ...Object.fromEntries(formData),
         slots: Number(formData.get("slots"))
     });
 
     if(!parsedData.success){
-        throw new Error(parsedData.error.message);
+        return { error: parsedData.error.message };
     }
 
     const supabase = await createClient();
     const jwtToken =  await supabase.auth.getClaims();
     if(jwtToken.error || !jwtToken.data) {
-        throw new Error("Not authenticated");
+        return { error: "Not authenticated" };
     }
 
     const { image, title, description, slots } = parsedData.data;
@@ -27,18 +28,18 @@ export async function createEvent(formData : FormData){
 
     const { error : uploadError} = await supabase.storage.from("event-cover")
         .upload(
-            path, 
-            image, 
+            path,
+            image,
             {
                 contentType: image.type
             }
         );
-    
+
     if(uploadError) {
-        throw new Error(uploadError.message);
+        return { error: uploadError.message };
     }
 
-    const { data, error } = await supabase.from('events').insert([{
+    const { error } = await supabase.from('events').insert([{
         image_link: path,
         title: title,
         description: description,
@@ -47,11 +48,13 @@ export async function createEvent(formData : FormData){
     }])
 
     if(error) {
-        throw new Error(error.message);
+        return { error: error.message };
     }
+
+    return { data: undefined };
 }
 
-export async function updateEvent(formData : FormData){
+export async function updateEvent(formData : FormData): Promise<ActionResult> {
     const image = formData.get("image");
 
     const parsedData = UpdateEventSchema.safeParse({
@@ -62,13 +65,13 @@ export async function updateEvent(formData : FormData){
     });
 
     if(!parsedData.success){
-        throw new Error(parsedData.error.message);
+        return { error: parsedData.error.message };
     }
 
     const supabase = await createClient();
     const jwtToken =  await supabase.auth.getClaims();
     if(jwtToken.error || !jwtToken.data) {
-        throw new Error("Not authenticated");
+        return { error: "Not authenticated" };
     }
 
     const { id, image: newImage, title, description, slots } = parsedData.data;
@@ -80,11 +83,11 @@ export async function updateEvent(formData : FormData){
         .single();
 
     if(fetchError || !existingEvent) {
-        throw new Error("Event not found");
+        return { error: "Event not found" };
     }
 
     if(existingEvent.created_by !== jwtToken.data.claims.sub) {
-        throw new Error("You are not allowed to update this event");
+        return { error: "You are not allowed to update this event" };
     }
 
     let imagePath = existingEvent.image_link;
@@ -103,7 +106,7 @@ export async function updateEvent(formData : FormData){
             );
 
         if(uploadError) {
-            throw new Error(uploadError.message);
+            return { error: uploadError.message };
         }
     }
 
@@ -115,26 +118,28 @@ export async function updateEvent(formData : FormData){
     }).eq('id', id);
 
     if(error) {
-        throw new Error(error.message);
+        return { error: error.message };
     }
+
+    return { data: undefined };
 }
 
-export async function subscribeToEvent(eventId: number){
+export async function subscribeToEvent(eventId: number): Promise<ActionResult> {
     const supabase = await createClient();
     const jwtToken = await supabase.auth.getClaims();
     if(jwtToken.error || !jwtToken.data) {
-        throw new Error("Not authenticated");
+        return { error: "Not authenticated" };
     }
 
-    const { data, error } = await supabase.rpc("subscribe_to_events", {
+    const { error } = await supabase.rpc("subscribe_to_events", {
         param_id: eventId
     });
 
     if(error) {
-        throw new Error(error.message);
+        return { error: error.message };
     }
 
-    return data;
+    return { data: undefined };
 }
 
 // `subscribed_events` has RLS enabled with no policies defined for it, so a
@@ -143,11 +148,11 @@ export async function subscribeToEvent(eventId: number){
 // through the admin client instead, deriving the user id from the caller's
 // own session rather than trusting client input.
 
-export async function getMySubscriptionStatus(eventId: number): Promise<boolean> {
+export async function getMySubscriptionStatus(eventId: number): Promise<ActionResult<boolean>> {
     const supabase = await createClient();
     const jwtToken = await supabase.auth.getClaims();
     if(jwtToken.error || !jwtToken.data) {
-        return false;
+        return { data: false };
     }
 
     const admin = createAdminClient();
@@ -159,17 +164,17 @@ export async function getMySubscriptionStatus(eventId: number): Promise<boolean>
         .maybeSingle();
 
     if(error) {
-        throw new Error(error.message);
+        return { error: error.message };
     }
 
-    return !!data;
+    return { data: !!data };
 }
 
-export async function getMySubscribedEvents(): Promise<Event[]> {
+export async function getMySubscribedEvents(): Promise<ActionResult<Event[]>> {
     const supabase = await createClient();
     const jwtToken = await supabase.auth.getClaims();
     if(jwtToken.error || !jwtToken.data) {
-        return [];
+        return { data: [] };
     }
 
     const admin = createAdminClient();
@@ -179,10 +184,12 @@ export async function getMySubscribedEvents(): Promise<Event[]> {
         .eq("user_id", jwtToken.data.claims.sub);
 
     if(error) {
-        throw new Error(error.message);
+        return { error: error.message };
     }
 
-    return (data ?? [])
-        .map((row) => row.events)
-        .filter((event): event is Event => event !== null);
+    return {
+        data: (data ?? [])
+            .map((row) => row.events)
+            .filter((event): event is Event => event !== null)
+    };
 }

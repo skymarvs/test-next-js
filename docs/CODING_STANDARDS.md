@@ -41,10 +41,17 @@ in ES5.
 - One file per domain under `app/actions/<domain>.ts` (e.g. `auth.ts`,
   `profile.ts`), `"use server"` at the top of the file.
 - Validate all input through the matching Zod schema (`safeParse`) before
-  touching Supabase or any other data source; throw on validation failure.
-- On a Supabase (or other backend) error, `throw new Error(error.message)`.
-  This is the single error-handling convention for actions — don't mix in
-  return-based `{ error }` result objects.
+  touching Supabase or any other data source; on validation failure or a
+  Supabase (or other backend) error, `return { error: error.message }`.
+  Actions return `ActionResult<T>` (`lib/types/action-result.ts`) —
+  `{ data: T }` on success or `{ error: string }` on failure — rather than
+  throwing. Next.js strips the message off anything thrown across the
+  Server Action boundary in production, so throwing here would silently
+  hide the real error from the client.
+- Client call sites unwrap the result with `unwrapActionResult` from
+  `lib/utils.ts` (throws a plain client-side `Error` if `result.error` is
+  set), so existing `.then()/.catch()` and `toast.promise(...)` error
+  handling keeps working unchanged.
 
 ## Routes
 
